@@ -2,7 +2,15 @@
   "name": "booker",
   "version": "0.0.0",
   "private": true,
+  "scripts": {
+    "test": "mocha"
+  },
   "dependencies": {
-    "amqplib": "^0.5.1"
+    "amqplib": "^0.5.1",
+    "superagent": "^3.5.2"
+  },
+  "devDependencies": {
+    "chai": "^4.0.2",
+    "mocha": "^3.4.2"
   }
 }
