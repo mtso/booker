@@ -1,0 +1,8 @@
+{
+  "name": "booker",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "amqplib": "^0.5.1"
+  }
+}
