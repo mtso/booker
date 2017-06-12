@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# FROM https://github.com/ryanramage/docker-build-run-push/blob/264ed4825829429303a005daa6e0ca8ad83135d1/docker-build
+
+if [ -z "$VERSION" ]; then
+    VERSION=$(node -e "console.log(require('./package.json').version)")
+fi
+
+if [ -z "$NAME" ]; then
+    NAME=$(node -e "console.log(require('./package.json').name.split('/').pop())")
+fi
+
+if [ -z "$AUTHOR" ]; then
+    AUTHOR=$(node -e "console.log(require('./package.json').author.split(' ').shift())")
+fi
+
+echo "Starting docker build $AUTHOR/$NAME:$VERSION"
+
+docker build -t "$AUTHOR/$NAME:$VERSION" "$@" .

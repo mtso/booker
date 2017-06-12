@@ -1,0 +1,12 @@
+node_modules
+build
+dist
+public
+static
+.buildinfo.json
+clipboard
+bin/
+*error*
+*debug*
+
+
