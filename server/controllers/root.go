@@ -22,4 +22,3 @@ func makeRootHandler() *mux.Router {
 
 	return root
 }
-

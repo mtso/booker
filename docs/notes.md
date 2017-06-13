@@ -5,6 +5,7 @@
 - How to parse request body in Content-Type application/json in Go?
 - Is it possible to write middleware that attaches arbitrary values to a specific http.Request?
 - What is context.Context and how is it used?
+- How to implement flash messages in Golang/React?
 
 ## API info
 
@@ -31,6 +32,7 @@ https://www.googleapis.com/books/v1/volumes?q=search+terms
 - [ ] Render markup with worker process, and pass state with AMQP.
 - [ ] Persist data with Postgres database connection.
 - [ ] Authenticate users.
+- [ ] Save session using cookies.
 - [ ] Add books by connecting to Google Books API.
 - [ ] Enable requesting and accepting of trades.
 - [ ] Let users edit account info (name, location, city)
