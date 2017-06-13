@@ -1,19 +1,18 @@
 
 ```
 JSON API
-/api
-POST /auth/login
-POST /auth/signup
-POST /auth/logout
-GET /books/autocomplete
-POST /book
-POST /trade
-GET /books
-GET /books/mybooks
-GET /trades/incoming
-GET /trades/outgoing
-GET /account
-POST /account
+POST /api/auth/login
+POST /api/auth/signup
+POST /api/auth/logout
+GET  /api/books/autocomplete
+POST /api/book
+POST /api/trade
+GET  /api/books
+GET  /api/books/mybooks
+GET  /api/trades/incoming
+GET  /api/trades/outgoing
+GET  /api/account
+POST /api/account
 
 
 Navigable react-router routes
@@ -21,8 +20,12 @@ Navigable react-router routes
 /login  
 /books/all
 /books/mybooks
-/trades
+/book/:id         Modal-like UI? Need to save URL state/history leading up for this.
+/trades           REDIRECTS to /trades/incoming
+/trades/incoming
+/trades/outgoing
 /account
+
 
 reach:
 /activity         show log of activity
