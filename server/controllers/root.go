@@ -16,6 +16,10 @@ func makeRootHandler() *mux.Router {
 	root.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/"))
 	})
+
+	handleAuth(root)
+	// root.Path("/auth").HandlerFunc()
+
 	return root
 }
 
