@@ -57,15 +57,16 @@ import (
 var db *gorm.DB
 
 func InitializeDb(conn string) (*gorm.DB, error) {
-	db, err := gorm.Open("postgres", conn)
+	newdb, err := gorm.Open("postgres", conn)
 	if err != nil {
 		return nil, err
 	}
+	db = newdb
 	// err = CreateUserSchema(db).Error
 	if err := CreateUserSchema(db); err != nil {
 		return nil, err
 	}
-	return db, nil
+	return newdb, nil
 
 	// opts, err := pg.ParseURL(conn)
 	// if err != nil {
@@ -81,7 +82,7 @@ func InitializeDb(conn string) (*gorm.DB, error) {
 
 type User struct {
 	gorm.Model
-	ID uint64 `gorm:"primary_key"`
+	// ID uint64 `gorm:"primary_key"`
 	Username string `gorm:"not null;unique"`
 	PasswordHash string `gorm:"not null"`
 	City string
@@ -92,8 +93,9 @@ func CreateUserSchema(db *gorm.DB) (err error) {
 	// if err = db.DropTable("users").Error; err != nil {
 	// 	return
 	// }
-	return db.Error
+	// return db.Error
 	// return db.Set("gorm:table_options", "IF NOT EXISTS").CreateTable(&User{}).Error
+	return db.Error
 	// return db.CreateTable(&User{}).Error
 	// return db.AutoMigrate(&User{}).Error
 	// err = db.CreateTable(&Users{}, &orm.CreateTableOptions{})

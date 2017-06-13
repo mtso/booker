@@ -48,22 +48,24 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	nu := &models.User{
+	nu := models.User{
 		Username: user,
 		PasswordHash: string(hash),
 	}
 	msg := "created user: " + user
 
-	if err := nu.Create(); err != nil {
+	err = nu.Create()
+	if err != nil {
 		msg = err.Error()
 		log.Println("CreateUser error", err)
 	}
 
+	success := err == nil
 	response := struct{
 		Success bool `json:"success"`
 		Message string `json:"message"`
 	}{
-		true,
+		success,
 		msg,
 	}
 
