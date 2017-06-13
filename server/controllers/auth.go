@@ -7,6 +7,8 @@ import (
 
 	"golang.org/x/crypto/bcrypt"
 	"github.com/gorilla/mux"
+
+	"github.com/mtso/booker/server/models"
 )
 
 func handleAuth(r *mux.Router) {
@@ -22,6 +24,10 @@ func handleAuth(r *mux.Router) {
 
 // query := r.URL.Query()
 // fmt.Printf("%v", query["username"])
+
+// cost, err := bcrypt.Cost(hash)
+// err = bcrypt.CompareHashAndPassword(hash, []byte(pass))
+// bcrypt.ErrMismatchedHashAndPassword
 func PostSignup(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	var u interface{}
@@ -42,19 +48,30 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cost, err := bcrypt.Cost(hash)
+	nu := &models.User{
+		Username: user,
+		PasswordHash: string(hash),
+	}
+	msg := "created user: " + user
+
+	if err := nu.Create(); err != nil {
+		msg = err.Error()
+		log.Println("CreateUser error", err)
+	}
+
+	response := struct{
+		Success bool `json:"success"`
+		Message string `json:"message"`
+	}{
+		true,
+		msg,
+	}
+
+	js, err := json.Marshal(response)
 	if err != nil {
 		log.Println(err)
 	}
 
-	err = bcrypt.CompareHashAndPassword(hash, []byte(pass))
-	if err != bcrypt.ErrMismatchedHashAndPassword {
-		log.Println(err)
-	} else if err != nil {
-		log.Println(err)
-	}
-
-	// store hash
-	log.Printf("%d\n%s\n", cost, hash)
-	log.Println(user, pass)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(js)
 }

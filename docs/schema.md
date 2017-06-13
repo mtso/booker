@@ -6,6 +6,7 @@ request -> approve -> received
 field | data type  | options
 ------|------------|----------
 name  | string     | not null
+password_hash | string | not null
 city  | string     |
 state | varchar(2) |
 
