@@ -1,108 +1,65 @@
-// package models
-
-// import (
-// 	// "crypto/tls"
-
-// 	"github.com/go-pg/pg"
-// 	"github.com/go-pg/pg/orm"
-// )
-
-// var db *pg.DB
-
-// func InitializeDb(conn string) (err error) {
-// 	opts, err := pg.ParseURL(conn)
-// 	if err != nil {
-// 		return err
-// 	}
-// 	opts.TLSConfig = nil
-// 	// opts.TLSConfig = &tls.Config{
-// 	// 	InsecureSkipVerify: true,
-// 	// }
-// 	db = pg.Connect(opts)
-// 	err = CreateUserSchema(db)
-// 	return
-// }
-
-// type User struct {
-// 	TableName struct{} `sql:"User"`
-// 	Id int64// `sql:",pk"`
-// 	Username string //`sql:",unique,notnull"`
-// 	PasswordHash string //`sql:",notnull"`
-// 	City string
-// 	State string
-// }
-
-// func CreateUserSchema(db *pg.DB) (err error) {
-// 	err = db.CreateTable(&User{}, &orm.CreateTableOptions{
-// 		IfNotExists: true,
-// 	})
-// 	return
-// }
-
-// func (u *User) Create() (err error) {
-// 	err = db.Insert(u)
-// 	return
-// }
-
 package models
 
 import (
-	// "crypto/tls"
+	"golang.org/x/crypto/bcrypt"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	// "github.com/go-pg/pg/orm"
 )
 
-var db *gorm.DB
+type users struct {
+	Verify func(string, []byte) error
+	Find   func(string) *User
+}
 
-func InitializeDb(conn string) (*gorm.DB, error) {
-	newdb, err := gorm.Open("postgres", conn)
-	if err != nil {
-		return nil, err
-	}
-	db = newdb
-	// err = CreateUserSchema(db).Error
-	if err := CreateUserSchema(db); err != nil {
-		return nil, err
-	}
-	return newdb, nil
-
-	// opts, err := pg.ParseURL(conn)
-	// if err != nil {
-	// 	return err
-	// }
-	// opts.TLSConfig = nil
-	// // opts.TLSConfig = &tls.Config{
-	// // 	InsecureSkipVerify: true,
-	// // }
-	// db = pg.Connect(opts)
-	// return nil
+var Users = &users{
+	Verify: verify,
+	Find:   find,
 }
 
 type User struct {
 	gorm.Model
-	// ID uint64 `gorm:"primary_key"`
-	Username string `gorm:"not null;unique"`
-	PasswordHash string `gorm:"not null"`
-	City string
-	State string
+	Username     string `gorm:"not null;unique"`
+	PasswordHash []byte `gorm:"not null"`
+	City         string
+	State        string
 }
 
 func CreateUserSchema(db *gorm.DB) (err error) {
-	// if err = db.DropTable("users").Error; err != nil {
-	// 	return
-	// }
-	// return db.Error
-	// return db.Set("gorm:table_options", "IF NOT EXISTS").CreateTable(&User{}).Error
-	return db.Error
-	// return db.CreateTable(&User{}).Error
-	// return db.AutoMigrate(&User{}).Error
-	// err = db.CreateTable(&Users{}, &orm.CreateTableOptions{})
-	// return
+	return db.AutoMigrate(&User{}).Error
+}
+
+func (u *User) StoreHash(password []byte) error {
+	hash, err := bcrypt.GenerateFromPassword(password, -1)
+	if err != nil {
+		return err
+	}
+	u.PasswordHash = hash
+	return nil
 }
 
 func (u *User) Create() (err error) {
 	err = db.Create(u).Error
 	return
+}
+
+// cost, err := bcrypt.Cost(hash)
+// err = bcrypt.CompareHashAndPassword(hash, []byte(pass))
+// bcrypt.ErrMismatchedHashAndPassword
+func verify(username string, password []byte) error {
+	u := User{}
+	db.Where("Username = ?", username).First(&u)
+	// TODO: what if user does not exist?
+	// if db.Error != nil {
+	// 	// handle not found!
+	// }
+	return bcrypt.CompareHashAndPassword(u.PasswordHash, password)
+}
+
+func find(username string) (u *User) {
+	db.Where("Username = ?", username).First(u)
+	return
+}
+
+func (u *User) Save() error {
+	return db.Save(u).Error
 }
