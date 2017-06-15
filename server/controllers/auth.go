@@ -12,6 +12,17 @@ import (
 
 var Users = models.Users
 
+// type Flash struct {
+// 	Code    string `json:"code"`
+// 	Message string `json:"message"`
+// }
+
+// type ApiResponse struct {
+// 	Ok    bool        `json:"ok"`
+// 	Data  interface{} `json:"data"`
+// 	Flash Flash       `json:"flash"`
+// }
+
 func handleAuth(r *mux.Router) {
 	s := r.PathPrefix("/auth").Subrouter()
 
@@ -27,16 +38,7 @@ func handleAuth(r *mux.Router) {
 // query := r.URL.Query()
 // fmt.Printf("%v", query["username"])
 func PostSignup(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var raw interface{}
-
-	err := decoder.Decode(&raw)
-	if err != nil {
-		log.Println("PostSignup Error:", err)
-		return
-	}
-
-	body := raw.(map[string]interface{})
+	body := DecodeBody(r)
 	user := body["username"].(string)
 	pass := body["password"].(string)
 
@@ -47,7 +49,8 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 
 	var msg string
 
-	if err := newUser.Create(); err != nil {
+	err := newUser.Create()
+	if err != nil {
 		msg = err.Error()
 		log.Println("CreateUser error", err)
 	} else {
@@ -74,20 +77,11 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostLogin(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var raw interface{}
-
-	err := decoder.Decode(&raw)
-	if err != nil {
-		log.Println("PostSignup Error:", err)
-		return
-	}
-
-	body := raw.(map[string]interface{})
+	body := DecodeBody(r)
 	user := body["username"].(string)
 	pass := body["password"].(string)
 
-	err = Users.Verify(user, []byte(pass))
+	err := Users.Verify(user, []byte(pass))
 	success := err == nil
 	var msg string
 
