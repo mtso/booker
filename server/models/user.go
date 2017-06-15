@@ -1,34 +1,81 @@
 package models
 
 import (
-	"golang.org/x/crypto/bcrypt"
+	"database/sql"
+	"errors"
 
-	"github.com/jinzhu/gorm"
+	_ "github.com/lib/pq"
+	"golang.org/x/crypto/bcrypt"
 )
 
-type users struct {
-	Verify func(string, []byte) error
-	Find   func(string) *User
+const (
+	CreateTableUser = `CREATE TABLE IF NOT EXISTS Users (
+		id bigserial NOT NULL UNIQUE,
+		username varchar(64) NOT NULL UNIQUE,
+		password_hash varchar(64) NOT NULL,
+		city varchar(128),
+		state varchar(64)
+	)`
+	SelectUserByName = `SELECT id, username, password_hash, city, state FROM Users
+		WHERE username = $1
+		LIMIT 1`
+	InsertUser = `INSERT INTO Users (username, password_hash) VALUES ($1, $2)`
+	UpdateUser = `UPDATE Users
+		SET city = $2,
+		    state = $3
+		WHERE username = $1`
+)
+
+// Singleton handle to UserSchema.
+var Users UserSchema
+
+var ErrNotFoundUser = errors.New("User not found.")
+
+// Contains the sql.DB connection.
+type UserSchema struct {
+	db *sql.DB
 }
 
-var Users = &users{
-	Verify: verify,
-	Find:   find,
-}
-
+// User model.
 type User struct {
-	gorm.Model
-	Username     string `gorm:"not null;unique"`
-	PasswordHash []byte `gorm:"not null"`
-	City         string
-	State        string
+	Id           int64          `sql:"id"`
+	Username     string         `sql:"username"`
+	PasswordHash []byte         `sql:"password_hash"`
+	City         sql.NullString `sql:"city"`
+	State        sql.NullString `sql:"state"`
 }
 
-func CreateUserSchema(db *gorm.DB) (err error) {
-	return db.AutoMigrate(&User{}).Error
+// Initializer that stores a reference to the db connection.
+func ConnectUsers(conn *sql.DB) (err error) {
+	Users.db = conn
+	_, err = conn.Exec(CreateTableUser)
+	return
 }
 
-func (u *User) StoreHash(password []byte) error {
+func (u UserSchema) Verify(username string, password []byte) error {
+	user, err := u.Find(username)
+	if err != nil {
+		return err
+	}
+	return bcrypt.CompareHashAndPassword(user.PasswordHash, password)
+}
+
+func (u UserSchema) Find(username string) (user User, err error) {
+	rows, err := u.db.Query(SelectUserByName, username)
+	if err != nil {
+		return
+	}
+
+	err = scanUser(rows, &user)
+	return
+}
+
+func (u *User) Create() (err error) {
+	_, err = Users.db.Exec(InsertUser, u.Username, u.PasswordHash)
+	return
+}
+
+func (u *User) SetPasswordHash(password []byte) error {
 	hash, err := bcrypt.GenerateFromPassword(password, -1)
 	if err != nil {
 		return err
@@ -37,29 +84,12 @@ func (u *User) StoreHash(password []byte) error {
 	return nil
 }
 
-func (u *User) Create() (err error) {
-	err = db.Create(u).Error
+// SQL scanner helper
+func scanUser(r *sql.Rows, u *User) (err error) {
+	if r.Next() {
+		err = r.Scan(&u.Id, &u.Username, &u.PasswordHash, &u.City, &u.State)
+	} else {
+		err = ErrNotFoundUser
+	}
 	return
-}
-
-// cost, err := bcrypt.Cost(hash)
-// err = bcrypt.CompareHashAndPassword(hash, []byte(pass))
-// bcrypt.ErrMismatchedHashAndPassword
-func verify(username string, password []byte) error {
-	u := User{}
-	db.Where("Username = ?", username).First(&u)
-	// TODO: what if user does not exist?
-	// if db.Error != nil {
-	// 	// handle not found!
-	// }
-	return bcrypt.CompareHashAndPassword(u.PasswordHash, password)
-}
-
-func find(username string) (u *User) {
-	db.Where("Username = ?", username).First(u)
-	return
-}
-
-func (u *User) Save() error {
-	return db.Save(u).Error
 }

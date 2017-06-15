@@ -10,7 +10,16 @@ import (
 	"github.com/mtso/booker/server/models"
 )
 
-var Users = models.Users
+// type Flash struct {
+// 	Code    string `json:"code"`
+// 	Message string `json:"message"`
+// }
+
+// type ApiResponse struct {
+// 	Ok    bool        `json:"ok"`
+// 	Data  interface{} `json:"data"`
+// 	Flash Flash       `json:"flash"`
+// }
 
 func handleAuth(r *mux.Router) {
 	s := r.PathPrefix("/auth").Subrouter()
@@ -18,6 +27,9 @@ func handleAuth(r *mux.Router) {
 	getSignup := func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("hello~ signup here"))
 	}
+
+	// s.Path("/signup").Methods("POST").HandlerFunc(getSignup)
+
 	s.HandleFunc("/signup", getSignup).Methods("GET")
 
 	s.HandleFunc("/signup", PostSignup).Methods("POST")
@@ -27,27 +39,19 @@ func handleAuth(r *mux.Router) {
 // query := r.URL.Query()
 // fmt.Printf("%v", query["username"])
 func PostSignup(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var raw interface{}
-
-	err := decoder.Decode(&raw)
-	if err != nil {
-		log.Println("PostSignup Error:", err)
-		return
-	}
-
-	body := raw.(map[string]interface{})
+	body := DecodeBody(r)
 	user := body["username"].(string)
 	pass := body["password"].(string)
 
 	newUser := models.User{
 		Username: user,
 	}
-	newUser.StoreHash([]byte(pass))
+	newUser.SetPasswordHash([]byte(pass))
 
 	var msg string
 
-	if err := newUser.Create(); err != nil {
+	err := newUser.Create()
+	if err != nil {
 		msg = err.Error()
 		log.Println("CreateUser error", err)
 	} else {
@@ -74,20 +78,11 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostLogin(w http.ResponseWriter, r *http.Request) {
-	decoder := json.NewDecoder(r.Body)
-	var raw interface{}
-
-	err := decoder.Decode(&raw)
-	if err != nil {
-		log.Println("PostSignup Error:", err)
-		return
-	}
-
-	body := raw.(map[string]interface{})
+	body := DecodeBody(r)
 	user := body["username"].(string)
 	pass := body["password"].(string)
 
-	err = Users.Verify(user, []byte(pass))
+	err := models.Users.Verify(user, []byte(pass))
 	success := err == nil
 	var msg string
 
@@ -113,6 +108,7 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 	w.Write(js)
 }
 
+// BodyParser?
 func DecodeBody(r *http.Request) (m map[string]interface{}) {
 	decoder := json.NewDecoder(r.Body)
 	var raw interface{}
