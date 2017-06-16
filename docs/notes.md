@@ -6,6 +6,7 @@
 - Is it possible to write middleware that attaches arbitrary values to a specific http.Request?
 - What is context.Context and how is it used?
 - How to implement flash messages in Golang/React?
+- How to set a field of a table to be indexed?
 
 ## API info
 
