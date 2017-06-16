@@ -20,7 +20,7 @@ const (
 		WHERE username = $1
 		LIMIT 1`
 	InsertUser = `INSERT INTO Users (username, password_hash) VALUES ($1, $2)`
-	UpdateUser = `UPDATE Users
+	UpdateUserLocation = `UPDATE Users
 		SET city = $2,
 		    state = $3
 		WHERE username = $1`
@@ -60,6 +60,14 @@ func (u UserSchema) Verify(username string, password []byte) error {
 	return bcrypt.CompareHashAndPassword(user.PasswordHash, password)
 }
 
+func (u UserSchema) FindAndVerify(username string, password []byte) (user User, err error) {
+	user, err = u.Find(username)
+	if err != nil {
+		return
+	}
+	return user, bcrypt.CompareHashAndPassword(user.PasswordHash, password)
+} 
+
 func (u UserSchema) Find(username string) (user User, err error) {
 	rows, err := u.db.Query(SelectUserByName, username)
 	if err != nil {
@@ -72,6 +80,11 @@ func (u UserSchema) Find(username string) (user User, err error) {
 
 func (u *User) Create() (err error) {
 	_, err = Users.db.Exec(InsertUser, u.Username, u.PasswordHash)
+	return
+}
+
+func (u *User) SetLocation(city string, state string) (err error) {
+	_, err = Users.db.Exec(UpdateUserLocation(), city, state)
 	return
 }
 

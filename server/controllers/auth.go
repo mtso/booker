@@ -18,10 +18,10 @@ const SessionId = "sess_id"
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 type JsonResponse struct {
-	Ok bool `json:"ok"`
-	Username string `json:"username,omitempty"`
-	Message string `json:"message,omitempty"`
-	Data map[string]interface{} `json:"data,omitempty"`
+	Ok       bool                   `json:"ok"`
+	Username string                 `json:"username,omitempty"`
+	Message  string                 `json:"message,omitempty"`
+	Data     map[string]interface{} `json:"data,omitempty"`
 	// Books []Book `json:"books,omitempty"`
 }
 
@@ -132,7 +132,7 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response := &JsonResponse{
-		Ok: success,
+		Ok:      success,
 		Message: msg,
 	}
 
@@ -152,16 +152,34 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 	WriteJson(w, response)
 }
 
+func WriteError(w http.ResponseWriter, err error, code ...int) {
+	log.Println(code, err)
+	WriteErrorResponse(w, err, code...)
+}
+
 func WriteErrorResponse(w http.ResponseWriter, err error, args ...int) {
 	code := http.StatusInternalServerError
 	if len(args) > 0 {
 		code = args[0]
 	}
 	errorResponse := &JsonResponse{
-		Ok: false,
+		Ok:      false,
 		Message: err.Error(),
 	}
 	WriteJson(w, errorResponse, code)
+}
+
+func PostPassword(w http.ResponseWriter, r *http.Request) {
+	body, err := ParseBody(r)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+	_, _ := body["username"]
+	_, _ := body["previous"]
+	_, _ := body["new"]
+	// user, err := models.Users.FindAndVerify(username)
+	// user.SetPasswordHash([]byte(previous))
 }
 
 func PostLogout(w http.ResponseWriter, r *http.Request) {
@@ -185,7 +203,7 @@ func PostLogout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := &JsonResponse{
-		Ok: true,
+		Ok:      true,
 		Message: username + " logged out.",
 	}
 	WriteJson(w, resp)
