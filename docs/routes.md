@@ -17,7 +17,8 @@ POST /api/account
 
 Navigable react-router routes
 /                 root
-/login  
+/login
+/signup
 /books/all
 /books/mybooks
 /book/:id         Modal-like UI? Need to save URL state/history leading up for this.

@@ -4,11 +4,15 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
 
 	"github.com/mtso/booker/server/models"
 )
+
+var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 // type Flash struct {
 // 	Code    string `json:"code"`
@@ -34,6 +38,10 @@ func handleAuth(r *mux.Router) {
 
 	s.HandleFunc("/signup", PostSignup).Methods("POST")
 	s.HandleFunc("/login", PostLogin).Methods("POST")
+}
+
+func TestLogin(w http.ResponseWriter, r *http.Request) {
+	// test that we save session ID properly
 }
 
 // query := r.URL.Query()
@@ -104,8 +112,29 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 		log.Println(err)
 	}
 
+	// Save session.
+	session, err := store.Get(r, "booker:sess")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	session.Values["isLoggedIn"] = true
+	if err := session.Save(r, w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
+}
+
+func IsLoggedIn(r *http.Request) (bool, error) {
+	session, err := store.Get(r, "booker:sess")
+	if err != nil {
+		return false, err
+	}
+	return session.Values["isLoggedIn"], nil
 }
 
 // BodyParser?
