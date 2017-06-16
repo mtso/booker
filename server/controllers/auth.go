@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"encoding/json"
+	"errors"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +16,16 @@ import (
 const SessionId = "sess_id"
 
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
+
+type JsonResponse struct {
+	Ok bool `json:"ok"`
+	Username string `json:"username,omitempty"`
+	Message string `json:"message,omitempty"`
+	Data map[string]interface{} `json:"data,omitempty"`
+	// Books []Book `json:"books,omitempty"`
+}
+
+// type JsonResponse map[string]interface{}
 
 // type Flash struct {
 // 	Code    string `json:"code"`
@@ -40,6 +51,7 @@ func handleAuth(r *mux.Router) {
 
 	s.HandleFunc("/signup", PostSignup).Methods("POST")
 	s.HandleFunc("/login", PostLogin).Methods("POST")
+	s.HandleFunc("/logout", PostLogout).Methods("POST")
 	s.HandleFunc("/test", TestLogin).Methods("GET")
 	s.HandleFunc("/testroute", IsLoggedInMiddleware(TestEndpoint)).Methods("GET")
 }
@@ -112,57 +124,105 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 
 	err := models.Users.Verify(user, []byte(pass))
 	success := err == nil
-	var msg string
+	msg := user + " logged in."
 
 	if err != nil {
 		log.Println(err)
 		msg = err.Error()
 	}
 
-	response := struct {
-		Success bool   `json:"success"`
-		Message string `json:"message,omitempty"`
-	}{
-		success,
-		msg,
-	}
-
-	js, err := json.Marshal(response)
-	if err != nil {
-		log.Println(err)
+	response := &JsonResponse{
+		Ok: success,
+		Message: msg,
 	}
 
 	// Save session.
 	session, err := store.Get(r, SessionId)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
+		WriteErrorResponse(w, err)
 		return
 	}
 
 	session.Values["username"] = user
 	if err := session.Save(r, w); err != nil {
+		WriteErrorResponse(w, err)
+		return
+	}
+
+	WriteJson(w, response)
+}
+
+func WriteErrorResponse(w http.ResponseWriter, err error, args ...int) {
+	code := http.StatusInternalServerError
+	if len(args) > 0 {
+		code = args[0]
+	}
+	errorResponse := &JsonResponse{
+		Ok: false,
+		Message: err.Error(),
+	}
+	WriteJson(w, errorResponse, code)
+}
+
+func PostLogout(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, SessionId)
+	if err != nil {
+		WriteErrorResponse(w, err)
+		return
+	}
+
+	username, err := GetUsername(r)
+	if err != nil {
+		WriteErrorResponse(w, err)
+		return
+	}
+
+	delete(session.Values, "username")
+
+	if err := session.Save(r, w); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
+	resp := &JsonResponse{
+		Ok: true,
+		Message: username + " logged out.",
+	}
+	WriteJson(w, resp)
+}
+
+func WriteJson(w http.ResponseWriter, response interface{}, code ...int) {
+	js, err := json.Marshal(response)
+	if err != nil {
+		log.Println(err)
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if len(code) > 0 {
+		w.WriteHeader(code[0])
+	}
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }
+
+var ErrNoUsername = errors.New("No username found for session")
 
 func GetUsername(r *http.Request) (string, error) {
 	session, err := store.Get(r, SessionId)
 	if err != nil {
 		return "", err
 	}
-	return session.Values["username"].(string), nil
+	if found, ok := session.Values["username"]; ok && found != nil {
+		return found.(string), nil
+	} else {
+		return "", ErrNoUsername
+	}
 }
 
 func IsLoggedIn(r *http.Request) (bool, error) {
-	session, err := store.Get(r, SessionId)
-	if err != nil {
-		return false, err
-	}
-	return session.Values["username"] != nil, nil
+	username, err := GetUsername(r)
+	return username != "", err
 }
 
 func IsLoggedInMiddleware(next http.HandlerFunc, args ...string) http.HandlerFunc {
@@ -174,7 +234,7 @@ func IsLoggedInMiddleware(next http.HandlerFunc, args ...string) http.HandlerFun
 	return func(w http.ResponseWriter, r *http.Request) {
 		isLoggedIn, err := IsLoggedIn(r)
 		if err != nil {
-			http.Error(w, redirectUrl, http.StatusFound)
+			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 
