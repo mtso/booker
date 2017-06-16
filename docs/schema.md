@@ -12,10 +12,14 @@ state | varchar(2) |
 
 ## Book
 
-field   | data type  | options
---------|------------|----------------------------------
-userId  | string     | not null
-status  | integer    | not null, (isOwned\|isRequested)
+field     | data type  | options
+----------|------------|----------------------------------
+id        | bigserial  | primary key, not null, unique
+title     | string     | not null
+isbn      | string
+image_url | string
+userId    | integer    | not null
+status    | integer    | not null, (isOwned\|isRequested)
 
 ## Trade
 

@@ -9,12 +9,12 @@ import (
 )
 
 const (
-	CreateTableUser = `CREATE TABLE IF NOT EXISTS Users (
-		id bigserial NOT NULL UNIQUE,
-		username varchar(64) NOT NULL UNIQUE,
-		password_hash varchar(64) NOT NULL,
-		city varchar(128),
-		state varchar(64)
+	CreateTableUsers = `CREATE TABLE IF NOT EXISTS Users (
+		id            bigserial    NOT NULL UNIQUE,
+		username      varchar(64)  NOT NULL UNIQUE,
+		password_hash varchar(64)  NOT NULL,
+		city          varchar(128),
+		state         varchar(64)
 	)`
 	SelectUserByName = `SELECT id, username, password_hash, city, state FROM Users
 		WHERE username = $1
@@ -48,7 +48,7 @@ type User struct {
 // Initializer that stores a reference to the db connection.
 func ConnectUsers(conn *sql.DB) (err error) {
 	Users.db = conn
-	_, err = conn.Exec(CreateTableUser)
+	_, err = conn.Exec(CreateTableUsers)
 	return
 }
 
