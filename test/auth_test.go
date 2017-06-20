@@ -8,8 +8,13 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/mtso/booker/server"
+	"github.com/mtso/booker/server/config"
 	"github.com/mtso/booker/server/controllers"
+)
+
+const (
+	DefaultUser = "wiggs"
+	DefaultPass = "cupcakes"
 )
 
 func TestTest(t *testing.T) {
@@ -38,7 +43,7 @@ func TestApp(t *testing.T) {
 	assertEqual := MakeAssertEqual(t)
 
 	// Start test server
-	app := main.InitializeApp()
+	app := config.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)
@@ -100,7 +105,7 @@ func TestLoginLogout(t *testing.T) {
 	client := MakeCookieMonster()
 
 	// Start test server
-	app := main.InitializeApp()
+	app := config.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)
@@ -155,7 +160,7 @@ func TestLoginTest(t *testing.T) {
 	client := MakeCookieMonster()
 
 	// Start test server
-	app := main.InitializeApp()
+	app := config.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)
@@ -174,9 +179,18 @@ func TestLoginTest(t *testing.T) {
 	assertEqual(string(body), "wiggs is logged in", "verify correct username")
 }
 
-func AuthenticateSession(ts *httptest.Server, client *http.Client) error {
+// Login helper
+func AuthenticateSession(ts *httptest.Server, client *http.Client, user ...string) error {
+	username := DefaultUser
+	password := DefaultPass
+	if len(user) > 1 {
+		username = user[0]
+		password = user[1]
+	}
+	credentials := []byte(`{"username":"` + username + `","password":"` + password + `"}`)
+	
 	// Login
-	req, err := http.NewRequest("POST", ts.URL+"/auth/login", bytes.NewBuffer([]byte(`{"username":"wiggs","password":"cupcakes"}`)))
+	req, err := http.NewRequest("POST", ts.URL+"/auth/login", bytes.NewBuffer(credentials))
 	if err != nil {
 		return err
 	}

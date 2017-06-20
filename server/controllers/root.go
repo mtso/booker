@@ -18,7 +18,7 @@ func makeRootHandler() *mux.Router {
 			Message: "test route",
 		}
 		WriteJson(w, resp)
-	
+
 	})
 	root.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("/"))
@@ -26,6 +26,8 @@ func makeRootHandler() *mux.Router {
 
 	handleAuth(root)
 	// root.Path("/auth").HandlerFunc()
+
+	handleBooks(root)
 
 	return root
 }

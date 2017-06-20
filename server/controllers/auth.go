@@ -18,11 +18,10 @@ const SessionId = "sess_id"
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
 type JsonResponse struct {
-	Ok       bool                   `json:"ok"`
-	Username string                 `json:"username,omitempty"`
-	Message  string                 `json:"message,omitempty"`
-	Data     map[string]interface{} `json:"data,omitempty"`
-	// Books []Book `json:"books,omitempty"`
+	Ok       bool        `json:"ok"`
+	Username string      `json:"username,omitempty"`
+	Message  string      `json:"message,omitempty"`
+	Data     interface{} `json:"data,omitempty"`
 }
 
 // type JsonResponse map[string]interface{}
@@ -163,7 +162,10 @@ func WriteError(w http.ResponseWriter, err error, code ...int) {
 	WriteErrorResponse(w, err, code...)
 }
 
-func WriteErrorResponse(w http.ResponseWriter, err error, args ...int) {
+func WriteErrorResponse(w http.ResponseWriter, err error, args ...int) bool {
+	if err == nil {
+		return false
+	}
 	code := http.StatusInternalServerError
 	if len(args) > 0 {
 		code = args[0]
@@ -173,6 +175,7 @@ func WriteErrorResponse(w http.ResponseWriter, err error, args ...int) {
 		Message: err.Error(),
 	}
 	WriteJson(w, errorResponse, code)
+	return true
 }
 
 // func PostPassword(w http.ResponseWriter, r *http.Request) {
