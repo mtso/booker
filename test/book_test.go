@@ -29,10 +29,27 @@ func TestGetBooks(t *testing.T) {
 	res, err := client.Do(req)
 	mustEqual(err, nil, "execute GET /api/books")
 
+	assertEqual(res.StatusCode, 200, "is valid route /api/books")
+
 	resp, err := ParseBody(res)
 	mustEqual(err, nil, "body is encoded in JSON")
 
 	books, ok := resp["data"].([]interface{})
 	assertEqual(ok, true, "data property is an array")
-	assertEqual(len(books), 10, "return length of 10 books per page")
+	assertEqual(len(books) <= 10, true, "return length of max 10 books per page")
+
+	mustEqual(len(books) > 0, true, "need a book to test")
+
+	raw := books[0]
+	book := raw.(map[string]interface{})
+
+	title, ok := book["title"]
+	mustEqual(ok, true, "book object has a title")
+
+	switch title.(type) {
+	case string:
+		break
+	default:
+		assertEqual(false, true, "title is a string")
+	}
 }
