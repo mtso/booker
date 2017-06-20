@@ -1,6 +1,8 @@
 package test
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"net/http"
 	"reflect"
 	"testing"
@@ -28,4 +30,20 @@ func MakeMustEqual(t *testing.T) func(interface{}, interface{}, string) {
 			t.Fatalf("%s: got=%v want=%v", m, got, want)
 		}
 	}
+}
+
+func ParseBody(r *http.Response) (js map[string]interface{}, err error) {
+	body, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return
+	}
+
+	var buf interface{}
+	err = json.Unmarshal(body, &buf)
+	if err != nil {
+		return
+	}
+
+	js = buf.(map[string]interface{})
+	return
 }
