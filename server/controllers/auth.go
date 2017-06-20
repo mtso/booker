@@ -75,7 +75,11 @@ func TestLogin(w http.ResponseWriter, r *http.Request) {
 
 func TestEndpoint(w http.ResponseWriter, r *http.Request) {
 	u, _ := GetUsername(r)
-	w.Write([]byte(u + " is logged into redirecting endpoint"))
+	WriteJson(w, &JsonResponse{
+		Ok:      true,
+		Message: u + " is logged into redirecting endpoint",
+	})
+	// w.Write([]byte(u + " is logged into redirecting endpoint"))
 }
 
 // query := r.URL.Query()
@@ -252,11 +256,7 @@ func IsLoggedInMiddleware(next http.HandlerFunc, args ...string) http.HandlerFun
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
-		isLoggedIn, err := IsLoggedIn(r)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+		isLoggedIn, _ := IsLoggedIn(r)
 
 		if isLoggedIn {
 			next(w, r)

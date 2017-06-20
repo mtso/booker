@@ -1,24 +1,15 @@
-package main
+package test
 
 import (
-	"testing"
+	"bytes"
 	"net/http"
 	"net/http/httptest"
-	"bytes"
-	"reflect"
+	"testing"
 
 	"github.com/mtso/booker/server"
 	"github.com/mtso/booker/server/controllers"
 	"github.com/mtso/booker/server/utils"
 )
-
-func MakeAssertEquals(t *testing.T) func(interface{}, interface{}, string) {
-	return func(got, want interface{}, m string) {
-		if !reflect.DeepEqual(got, want) {
-			t.Errorf("%s: got=%v want=%v", m, got, want)
-		}
-	}
-}
 
 func TestTest(t *testing.T) {
 	ts := httptest.NewServer(controllers.Root)
@@ -26,7 +17,7 @@ func TestTest(t *testing.T) {
 
 	buf := bytes.NewBuffer([]byte("hello~"))
 
-	res, err := http.Post(ts.URL + "/test", "application/json", buf)
+	res, err := http.Post(ts.URL+"/test", "application/json", buf)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -42,7 +33,7 @@ func TestTest(t *testing.T) {
 }
 
 func TestApp(t *testing.T) {
-	assertEquals := MakeAssertEquals(t)
+	assertEqual := MakeAssertEqual(t)
 	app := main.InitializeApp()
 	defer app.Db.Close()
 
@@ -50,7 +41,7 @@ func TestApp(t *testing.T) {
 	defer ts.Close()
 
 	buf := bytes.NewBuffer([]byte(`{"username":"wiggs","password":"cupcakes"}`))
-	res, err := http.Post(ts.URL + "/auth/login", "application/json", buf)
+	res, err := http.Post(ts.URL+"/auth/login", "application/json", buf)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -60,8 +51,34 @@ func TestApp(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	assertEquals(err, nil, "No error in parsing JSON")
-	assertEquals(res.StatusCode, 200, "Status code 200 for login")
-	assertEquals(resp["ok"], true, "Response is ok")
-	assertEquals(resp["message"], "wiggs logged in.", "Login message matches correct username")
+	assertEqual(err, nil, "No error in parsing JSON")
+	assertEqual(res.StatusCode, 200, "Status code 200 for login")
+	assertEqual(resp["ok"], true, "Response is ok")
+	assertEqual(resp["message"], "wiggs logged in.", "Login message matches correct username")
+
+	cookies := MapCookies(res.Cookies())
+	sess_cookie := cookies["sess_id"]
+
+	req, err := http.NewRequest("GET", ts.URL+"/auth/testroute", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	req.AddCookie(sess_cookie)
+
+	client := &http.Client{}
+	res, err = client.Do(req)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assertEqual(res.StatusCode, 200, "Status 200 for /testroute")
+
+	resp, err = utils.ParseBody(res)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	assertEqual(resp["ok"], true, "Response is ok")
+	assertEqual(resp["message"], "wiggs is logged into redirecting endpoint", "Saves cookie session")
 }

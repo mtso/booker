@@ -2,8 +2,8 @@ package utils
 
 import (
 	"encoding/json"
-	"net/http"
 	"io/ioutil"
+	"net/http"
 )
 
 func ParseBody(r *http.Response) (js map[string]interface{}, err error) {
@@ -19,6 +19,5 @@ func ParseBody(r *http.Response) (js map[string]interface{}, err error) {
 	}
 
 	js = buf.(map[string]interface{})
-	return 
+	return
 }
-

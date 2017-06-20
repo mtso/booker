@@ -23,7 +23,7 @@ func main() {
 }
 
 type App struct {
-	Db *sql.DB
+	Db      *sql.DB
 	Handler http.Handler
 }
 
