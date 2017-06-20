@@ -1,11 +1,12 @@
 package test
 
 import (
+	// "io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
-	"github.com/mtso/booker/server"
+	"github.com/mtso/booker/server/config"
 )
 
 func TestGetBooks(t *testing.T) {
@@ -17,7 +18,7 @@ func TestGetBooks(t *testing.T) {
 	client := MakeCookieMonster()
 
 	// Start test server
-	app := main.InitializeApp()
+	app := config.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)
@@ -30,6 +31,9 @@ func TestGetBooks(t *testing.T) {
 	mustEqual(err, nil, "execute GET /api/books")
 
 	assertEqual(res.StatusCode, 200, "is valid route /api/books")
+
+	// b, err := ioutil.ReadAll(res.Body)
+	// t.Errorf("%s",b)
 
 	resp, err := ParseBody(res)
 	mustEqual(err, nil, "body is encoded in JSON")

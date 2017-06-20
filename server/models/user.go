@@ -19,7 +19,7 @@ const (
 	SelectUserByName = `SELECT id, username, password_hash, city, state FROM Users
 		WHERE username = $1
 		LIMIT 1`
-	InsertUser = `INSERT INTO Users (username, password_hash) VALUES ($1, $2)`
+	InsertUser         = `INSERT INTO Users (username, password_hash) VALUES ($1, $2)`
 	UpdateUserLocation = `UPDATE Users
 		SET city = $2,
 		    state = $3
@@ -66,7 +66,7 @@ func (u UserSchema) FindAndVerify(username string, password []byte) (user User, 
 		return
 	}
 	return user, bcrypt.CompareHashAndPassword(user.PasswordHash, password)
-} 
+}
 
 func (u UserSchema) Find(username string) (user User, err error) {
 	rows, err := u.db.Query(SelectUserByName, username)

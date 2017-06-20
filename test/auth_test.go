@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/mtso/booker/server"
+	"github.com/mtso/booker/server/config"
 	"github.com/mtso/booker/server/controllers"
 )
 
@@ -43,7 +43,7 @@ func TestApp(t *testing.T) {
 	assertEqual := MakeAssertEqual(t)
 
 	// Start test server
-	app := main.InitializeApp()
+	app := config.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)
@@ -105,7 +105,7 @@ func TestLoginLogout(t *testing.T) {
 	client := MakeCookieMonster()
 
 	// Start test server
-	app := main.InitializeApp()
+	app := config.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)
@@ -160,7 +160,7 @@ func TestLoginTest(t *testing.T) {
 	client := MakeCookieMonster()
 
 	// Start test server
-	app := main.InitializeApp()
+	app := config.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)
