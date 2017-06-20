@@ -2,6 +2,7 @@ package test
 
 import (
 	"bytes"
+	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -143,4 +144,58 @@ func TestLoginLogout(t *testing.T) {
 
 	assertEqual(resp["ok"], true, "")
 	assertEqual(resp["message"], "wiggs logged out.", "logout message matches correct username")
+}
+
+func TestLoginTest(t *testing.T) {
+	// Set up assertions
+	assertEqual := MakeAssertEqual(t)
+	mustEqual := MakeMustEqual(t)
+
+	// Init client with cookie jar
+	client := MakeCookieMonster()
+
+	// Start test server
+	app := main.InitializeApp()
+	defer app.Db.Close()
+
+	ts := httptest.NewServer(app.Handler)
+	defer ts.Close()
+
+	err := AuthenticateSession(ts, client)
+	mustEqual(err, nil, "authenticate session")
+
+	req, err := http.NewRequest("GET", ts.URL+"/auth/test", nil)
+	mustEqual(err, nil, "prep request to /auth/test")
+	resp, err := client.Do(req)
+	assertEqual(err, nil, "test fine")
+
+	body, err := ioutil.ReadAll(resp.Body)
+	mustEqual(err, nil, "validate body")
+	assertEqual(string(body), "wiggs is logged in", "verify correct username")
+}
+
+func AuthenticateSession(ts *httptest.Server, client *http.Client) error {
+	// Login
+	req, err := http.NewRequest("POST", ts.URL+"/auth/login", bytes.NewBuffer([]byte(`{"username":"wiggs","password":"cupcakes"}`)))
+	if err != nil {
+		return err
+	}
+	req.Header["Content-Type"] = append(req.Header["Content-Type"], "application/json")
+
+	res, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	// Save session cookie
+	sess_cookie := FilterCookies(res.Cookies(), func(c *http.Cookie) bool {
+		return c.Name == "sess_id"
+	})
+	cookieurl, err := url.Parse(ts.URL)
+	if err != nil {
+		return err
+	}
+
+	client.Jar.SetCookies(cookieurl, sess_cookie)
+	return nil
 }
