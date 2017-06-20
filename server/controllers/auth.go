@@ -45,6 +45,8 @@ func handleAuth(r *mux.Router) {
 		w.Write([]byte("hello~ signup here"))
 	}
 
+	// s.HandleFunc
+
 	// s.Path("/signup").Methods("POST").HandlerFunc(getSignup)
 
 	s.HandleFunc("/signup", getSignup).Methods("GET")
@@ -169,18 +171,18 @@ func WriteErrorResponse(w http.ResponseWriter, err error, args ...int) {
 	WriteJson(w, errorResponse, code)
 }
 
-func PostPassword(w http.ResponseWriter, r *http.Request) {
-	body, err := ParseBody(r)
-	if err != nil {
-		WriteError(w, err)
-		return
-	}
-	_, _ := body["username"]
-	_, _ := body["previous"]
-	_, _ := body["new"]
-	// user, err := models.Users.FindAndVerify(username)
-	// user.SetPasswordHash([]byte(previous))
-}
+// func PostPassword(w http.ResponseWriter, r *http.Request) {
+// 	body, err := ParseBody(r)
+// 	if err != nil {
+// 		WriteError(w, err)
+// 		return
+// 	}
+// 	_, _ := body["username"]
+// 	_, _ := body["previous"]
+// 	_, _ := body["new"]
+// 	// user, err := models.Users.FindAndVerify(username)
+// 	// user.SetPasswordHash([]byte(previous))
+// }
 
 func PostLogout(w http.ResponseWriter, r *http.Request) {
 	session, err := store.Get(r, SessionId)

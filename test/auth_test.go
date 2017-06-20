@@ -7,6 +7,7 @@ import (
 	"bytes"
 	"reflect"
 
+	"github.com/mtso/booker/server"
 	"github.com/mtso/booker/server/controllers"
 	"github.com/mtso/booker/server/utils"
 )
@@ -42,7 +43,7 @@ func TestTest(t *testing.T) {
 
 func TestApp(t *testing.T) {
 	assertEquals := MakeAssertEquals(t)
-	app := InitializeApp()
+	app := main.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)
