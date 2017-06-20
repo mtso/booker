@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/mtso/booker/server"
+	"github.com/mtso/booker/server/config"
 )
 
 func TestGetBooks(t *testing.T) {
@@ -17,7 +17,7 @@ func TestGetBooks(t *testing.T) {
 	client := MakeCookieMonster()
 
 	// Start test server
-	app := main.InitializeApp()
+	app := config.InitializeApp()
 	defer app.Db.Close()
 
 	ts := httptest.NewServer(app.Handler)

@@ -18,9 +18,17 @@ const (
 	SelectBookByIsbn = `SELECT id, title, isbn, image_url, user_id FROM Books
 		WHERE isbn = $1
 		LIMIT 1`
-	// EDIT THIS FOR PAGINATION
-	SelectBooks = `SELECT id, title, isbn, image_url, user_id FROM Books
-		ORDER BY id DESC OFFSET $1 LIMIT $2`
+	SelectBooks = `SELECT
+		DISTINCT ON (books.id) 
+			( books.id
+			, title
+			, isbn
+			, image_url
+			, username)
+		FROM Books, Users
+		WHERE users.id = books.user_id
+		ORDER BY books.id DESC
+		OFFSET $1 LIMIT $2`
 	SelectBooksByUserId = `SELECT id, title, isbn, image_url, user_id FROM Books
 		WHERE user_id = $1 ORDER DESC LIMIT 10`
 	InsertBook     = `INSERT INTO Books (title, isbn, image_url, user_id) VALUES ($1, $2)`
