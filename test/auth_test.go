@@ -3,12 +3,9 @@ package test
 import (
 	"bytes"
 	"net/http"
-	"net/http/cookiejar"
 	"net/http/httptest"
 	"net/url"
 	"testing"
-
-	"golang.org/x/net/publicsuffix"
 
 	"github.com/mtso/booker/server"
 	"github.com/mtso/booker/server/controllers"
@@ -99,9 +96,7 @@ func TestLoginLogout(t *testing.T) {
 	mustEqual := MakeMustEqual(t)
 
 	// Init client with cookie jar
-	jar, err := cookiejar.New(&cookiejar.Options{PublicSuffixList: publicsuffix.List})
-	mustEqual(err, nil, "initialize cookiejar")
-	client := &http.Client{Jar: jar}
+	client := MakeCookieMonster()
 
 	// Start test server
 	app := main.InitializeApp()
@@ -120,13 +115,12 @@ func TestLoginLogout(t *testing.T) {
 	assertEqual(res.StatusCode, 200, "")
 
 	// Save session cookie
-	cookies := MapCookies(res.Cookies())
-	sess_cookie := cookies["sess_id"]
+	sess_cookie := FilterCookies(res.Cookies(), func(c *http.Cookie) bool {
+		return c.Name == "sess_id"
+	})
 	wu, err := url.Parse(ts.URL)
 	mustEqual(err, nil, "Parse testserver's URL")
-	var cc []*http.Cookie
-	cc = append(cc, sess_cookie)
-	client.Jar.SetCookies(wu, cc)
+	client.Jar.SetCookies(wu, sess_cookie)
 
 	// Assert login response body
 	resp, err := ParseBody(res)
