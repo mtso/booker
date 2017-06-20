@@ -43,6 +43,14 @@ func TestGetBooks(t *testing.T) {
 	raw := books[0]
 	book := raw.(map[string]interface{})
 
+	_, ok = book["isbn"]
+	assertEqual(ok, true, "book object has isbn")
+	_, ok = book["image_url"]
+	assertEqual(ok, true, "book object has image_url")
+	_, ok = book["username"]
+	assertEqual(ok, true, "book object has username")
+	_, ok = book["id"]
+	assertEqual(ok, true, "book object has id")
 	title, ok := book["title"]
 	mustEqual(ok, true, "book object has a title")
 
