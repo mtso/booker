@@ -40,16 +40,6 @@ type JsonResponse struct {
 func handleAuth(r *mux.Router) {
 	s := r.PathPrefix("/auth").Subrouter()
 
-	getSignup := func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("hello~ signup here"))
-	}
-
-	// s.HandleFunc
-
-	// s.Path("/signup").Methods("POST").HandlerFunc(getSignup)
-
-	s.HandleFunc("/signup", getSignup).Methods("GET")
-
 	s.HandleFunc("/signup", PostSignup).Methods("POST")
 	s.HandleFunc("/login", PostLogin).Methods("POST")
 	s.HandleFunc("/logout", PostLogout).Methods("POST")

@@ -188,7 +188,7 @@ func AuthenticateSession(ts *httptest.Server, client *http.Client, user ...strin
 		password = user[1]
 	}
 	credentials := []byte(`{"username":"` + username + `","password":"` + password + `"}`)
-	
+
 	// Login
 	req, err := http.NewRequest("POST", ts.URL+"/auth/login", bytes.NewBuffer(credentials))
 	if err != nil {
