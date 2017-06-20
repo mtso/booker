@@ -20,11 +20,11 @@ const (
 		LIMIT 1`
 	SelectBooks = `SELECT
 		DISTINCT ON (books.id) 
-			( books.id
+			books.id
 			, title
 			, isbn
 			, image_url
-			, username)
+			, username
 		FROM Books, Users
 		WHERE users.id = books.user_id
 		ORDER BY books.id DESC
@@ -47,11 +47,12 @@ type BookSchema struct {
 
 // User model.
 type Book struct {
-	Id       int64  `sql:"id"`
-	Title    string `sql:"username"`
-	Isbn     string `sql:"password_hash"`
-	ImageUrl string `sql:"city"`
-	UserId   int64  `sql:"state"`
+	Id       int64  `json:"id"`
+	Title    string `json:"title"`
+	Isbn     string `json:"isbn"`
+	ImageUrl string `json:"image_url"`
+	UserId   int64  `json:"user_id,omitempty"`
+	Username string `json:"username"`
 }
 
 // Initializer that stores a reference to the db connection.
@@ -82,7 +83,7 @@ func (s BookSchema) GetBooks(page ...int) ([]Book, error) {
 	bks := make([]Book, 0)
 	for rows.Next() {
 		var bk Book
-		err := rows.Scan(&bk.Id, &bk.Title, &bk.Isbn, &bk.ImageUrl, &bk.UserId)
+		err := rows.Scan(&bk.Id, &bk.Title, &bk.Isbn, &bk.ImageUrl, &bk.Username)
 		if err != nil {
 			return nil, err
 		}

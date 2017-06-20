@@ -2,9 +2,9 @@ package config
 
 import (
 	"database/sql"
-	"os"
-	"net/http"
 	"log"
+	"net/http"
+	"os"
 
 	"github.com/mtso/booker/server/controllers"
 	"github.com/mtso/booker/server/models"

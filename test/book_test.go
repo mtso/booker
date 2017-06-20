@@ -1,6 +1,7 @@
 package test
 
 import (
+	// "io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -30,6 +31,9 @@ func TestGetBooks(t *testing.T) {
 	mustEqual(err, nil, "execute GET /api/books")
 
 	assertEqual(res.StatusCode, 200, "is valid route /api/books")
+
+	// b, err := ioutil.ReadAll(res.Body)
+	// t.Errorf("%s",b)
 
 	resp, err := ParseBody(res)
 	mustEqual(err, nil, "body is encoded in JSON")
