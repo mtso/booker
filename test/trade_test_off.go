@@ -9,6 +9,7 @@ import (
 	"github.com/mtso/booker/server/config"
 )
 
+// Can request trade of a book that the user does not own
 func TestTrade(t *testing.T) {
 	// Set up assertions
 	assertEqual := MakeAssertEqual(t)
@@ -26,6 +27,7 @@ func TestTrade(t *testing.T) {
 	err := AuthenticateSession(ts, client2, User2, Pass2)
 
 	data := bytes.NewBuffer([]byte(`{"isRequest":true}`))
+	// /api/trade/:bookid
 	req, err := http.NewRequest("POST", ts.URL+"/api/trade/1", data)
 	mustEqual(err, nil, "prep POST /api/trade/1")
 

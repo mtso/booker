@@ -99,11 +99,9 @@ func dropTables() {
 
 func TestMain(m *testing.M) {
 	// drop tables and create test users 1 and 2
+	dropTables()
 	createTestDb()
 
 	code := m.Run()
-	// drop tables
-	dropTables()
-
 	os.Exit(code)
 }
