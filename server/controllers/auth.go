@@ -19,29 +19,6 @@ var ErrNoUsername = errors.New("No username found for session")
 
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
 
-func TestLogin(w http.ResponseWriter, r *http.Request) {
-	// test that we save session ID properly
-	ok, err := IsLoggedIn(r)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
-	}
-	if ok {
-		u, _ := GetUsername(r)
-		w.Write([]byte(u + " is logged in"))
-	} else {
-		w.Write([]byte("not logged in"))
-	}
-}
-
-func TestEndpoint(w http.ResponseWriter, r *http.Request) {
-	u, _ := GetUsername(r)
-	resp := make(JsonResponse)
-	resp["ok"] = true
-	resp["message"] = u + " is logged into redirecting endpoint"
-	WriteJson(w, resp)
-}
-
 // query := r.URL.Query()
 // fmt.Printf("%v", query["username"])
 func PostSignup(w http.ResponseWriter, r *http.Request) {
