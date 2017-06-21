@@ -3,7 +3,7 @@ import BookCell from './BookCell'
 
 const BookTable = ({ books }) => (
   <div>
-    {books.map((book) => <BookCell {...book} />)}
+    {books.map((book, i) => <BookCell key={i} {...book} />)}
   </div>
 )
 

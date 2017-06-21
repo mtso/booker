@@ -28,7 +28,7 @@ Navigable react-router routes
 /trades/incoming
 /trades/outgoing
 /account
-
+/new
 
 reach:
 /activity         show log of activity
