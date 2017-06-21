@@ -31,7 +31,7 @@ const (
 		OFFSET $1 LIMIT $2`
 	SelectBooksByUserId = `SELECT id, title, isbn, image_url, user_id FROM Books
 		WHERE user_id = $1 ORDER DESC LIMIT 10`
-	InsertBook     = `INSERT INTO Books (title, isbn, image_url, user_id) VALUES ($1, $2)`
+	InsertBook     = `INSERT INTO Books (title, isbn, image_url, user_id) VALUES ($1, $2, $3, $4)`
 	UpdateBookUser = `UPDATE Books SET user_id = $2 WHERE id = $1`
 )
 
@@ -108,7 +108,7 @@ func (b *Book) UpdateUser(userId int64) (err error) {
 }
 
 func (b *Book) Create() (err error) {
-	_, err = Users.db.Exec(InsertBook /* TODO: implement*/)
+	_, err = Users.db.Exec(InsertBook, b.Title, b.Isbn, b.ImageUrl, b.UserId)
 	return
 }
 

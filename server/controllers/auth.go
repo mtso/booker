@@ -45,7 +45,10 @@ func TestEndpoint(w http.ResponseWriter, r *http.Request) {
 // query := r.URL.Query()
 // fmt.Printf("%v", query["username"])
 func PostSignup(w http.ResponseWriter, r *http.Request) {
-	body := utils.ParseRequestBody(r)
+	body, err := utils.ParseRequestBody(r)
+	if WriteErrorResponse(w, err) {
+		return
+	}
 	user := body["username"].(string)
 	pass := body["password"].(string)
 
@@ -56,7 +59,7 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 
 	var msg string
 
-	err := newUser.Create()
+	err = newUser.Create()
 	if err != nil {
 		msg = err.Error()
 		log.Println("CreateUser error", err)
@@ -84,11 +87,14 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostLogin(w http.ResponseWriter, r *http.Request) {
-	body := utils.ParseRequestBody(r)
+	body, err := utils.ParseRequestBody(r)
+	if WriteErrorResponse(w, err) {
+		return
+	}
 	user := body["username"].(string)
 	pass := body["password"].(string)
 
-	err := models.Users.Verify(user, []byte(pass))
+	err = models.Users.Verify(user, []byte(pass))
 	success := err == nil
 	msg := user + " logged in."
 
