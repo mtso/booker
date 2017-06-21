@@ -1,19 +1,21 @@
 
 ```
 JSON API
-POST /api/auth/login
-POST /api/auth/signup
-POST /api/auth/logout
-GET  /api/books/autocomplete
-POST /api/book
-POST /api/trade
-GET  /api/books
-GET  /api/books/mybooks
-GET  /api/trades/incoming
-GET  /api/trades/outgoing
-GET  /api/account
-POST /api/account
-
+√ POST /auth/login
+√ POST /auth/signup
+√ POST /auth/logout
+  GET  /api/search
+x GET  /api/books/autocomplete
+√ POST /api/book
+  POST /api/trade
+√ GET  /api/books
+√ GET  /api/books/mybooks
+  GET  /api/trades/incoming
+  GET  /api/trades/outgoing
+  GET  /api/account
+√ GET  /api/user/username
+√ POST /api/user
+  POST /api/trade/:bookid
 
 Navigable react-router routes
 /                 root

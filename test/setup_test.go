@@ -31,6 +31,7 @@ func createTestDb() {
 	defer app.Db.Close()
 	defer ts.Close()
 
+	// Add test users
 	for _, u := range testusers {
 		log.Println("Creating user", u)
 		buf := BufferUser(u.Username, u.Password)
@@ -46,6 +47,7 @@ func createTestDb() {
 		panic(err)
 	}
 
+	// Add test books owned by User1
 	for _, b := range testbooks {
 		log.Println("Creating book", b.Title)
 		js, err := json.Marshal(b)
@@ -61,6 +63,26 @@ func createTestDb() {
 		if err != nil {
 			panic(err)
 		}
+	}
+
+	// Add book owned by User2
+	client2 := MakeCookieMonster()
+	err = AuthenticateSession(ts, client2, User2, Pass2)
+	if err != nil {
+		panic(err)
+	}
+	js, err := json.Marshal(user2book)
+	if err != nil {
+		panic(err)
+	}
+	buf := bytes.NewBuffer(js)
+	req, err := http.NewRequest("POST", ts.URL+"/api/book", buf)
+	if err != nil {
+		panic(err)
+	}
+	_, err = client2.Do(req)
+	if err != nil {
+		panic(err)
 	}
 }
 

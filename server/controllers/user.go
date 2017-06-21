@@ -26,14 +26,15 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	}
 	city, cityOk := body["city"]
 	state, stateOk := body["state"]
+	newPass, newPassOk := body["password"]
+
+	user, err := models.Users.Find(username)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
 
 	if cityOk && stateOk {
-		user, err := models.Users.Find(username)
-		if err != nil {
-			WriteError(w, err)
-			return
-		}
-
 		err = user.SetLocation(city.(string), state.(string))
 		if err != nil {
 			WriteError(w, err)
@@ -41,6 +42,16 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		}
 
 		isLocationUpdated = true
+	}
+
+	if newPassOk {
+		err = user.SavePasswordHash([]byte(newPass.(string)))
+		if err != nil {
+			WriteError(w, err)
+			return
+		}
+
+		isPasswordUpdated = true
 	}
 
 	resp := make(JsonResponse)

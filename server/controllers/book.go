@@ -28,6 +28,28 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 	WriteJson(w, resp)
 }
 
+func GetMyBooks(w http.ResponseWriter, r *http.Request) {
+	username, err := GetUsername(r)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	bks, err := models.Books.GetMyBooks(username)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	for _, v := range bks {
+		v.ImageUrl = url.QueryEscape(v.ImageUrl)
+	}
+
+	resp := make(JsonResponse)
+	resp["ok"] = true
+	resp["data"] = bks
+
+	WriteJson(w, resp)
+}
+
 func PostBook(w http.ResponseWriter, r *http.Request) {
 	body, err := utils.ParseRequestBody(r)
 	if WriteErrorResponse(w, err) {

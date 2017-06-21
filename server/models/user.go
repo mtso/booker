@@ -24,6 +24,9 @@ const (
 		SET city = $2,
 		    state = $3
 		WHERE username = $1`
+	UpdateUserPassword = `UPDATE Users
+		SET password_hash = $2
+		WHERE username = $1`
 )
 
 // Singleton handle to UserSchema.
@@ -86,6 +89,16 @@ func (u *User) Create() (err error) {
 func (u *User) SetLocation(city string, state string) (err error) {
 	_, err = Users.db.Exec(UpdateUserLocation, u.Username, city, state)
 	return
+}
+
+func (u *User) SavePasswordHash(password []byte) error {
+	hash, err := bcrypt.GenerateFromPassword(password, -1)
+	if err != nil {
+		return err
+	}
+	u.PasswordHash = hash
+	_, err = Users.db.Exec(UpdateUserPassword, u.Username, hash)
+	return err
 }
 
 func (u *User) SetPasswordHash(password []byte) error {
