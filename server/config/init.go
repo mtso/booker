@@ -22,6 +22,6 @@ func InitializeApp() *App {
 
 	return &App{
 		db,
-		makeRootHandler(), //controllers.Root,
+		makeRootHandler(),
 	}
 }

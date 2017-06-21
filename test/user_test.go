@@ -114,3 +114,34 @@ func TestUpdatePassword(t *testing.T) {
 	assertEqual(body["ok"], true, "get a JSON API response")
 	assertEqual(body["message"], "password changed", "successfully change password")
 }
+
+func TestGetUser(t *testing.T) {
+	assertEqual := MakeAssertEqual(t)
+	mustEqual := MakeMustEqual(t)
+
+	// Init client with cookie jar
+	// client := MakeCookieMonster()
+
+	// Start test server
+	app := config.InitializeApp()
+	defer app.Db.Close()
+
+	ts := httptest.NewServer(app.Handler)
+	defer ts.Close()
+
+	res, err := http.Get(ts.URL + "/api/user/wiggs")
+	mustEqual(err, nil, "execute GET request to /api/user")
+	assertEqual(res.StatusCode, 200, "finds path")
+
+	body, err := ParseBody(res)
+	mustEqual(err, nil, "encode response in JSON")
+
+	assertEqual(body["ok"], true, "succeed request")
+	username, ok := body["username"]
+	assertEqual(ok, true, "username exists")
+	assertEqual(username, "wiggs", "correct username")
+	_, ok = body["city"]
+	assertEqual(ok, true, "city exists")
+	_, ok = body["state"]
+	assertEqual(ok, true, "state exists")
+}

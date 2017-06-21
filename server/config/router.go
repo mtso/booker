@@ -37,5 +37,10 @@ func makeRootHandler() *mux.Router {
 	// /books endpoint root catchall
 	books.Methods("GET").MatcherFunc(catchall).HandlerFunc(GetBooks)
 
+	user := api.PathPrefix("/user").Subrouter()
+	user.Path("/{username:[a-z0-9A-Z]*}").HandlerFunc(GetUser)
+	// user.PathPrefix("").HandlerFunc(GetUser)
+	// {username:asdf}
+	// .Methods("GET")
 	return router
 }

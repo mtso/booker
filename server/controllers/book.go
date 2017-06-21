@@ -17,10 +17,9 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 		v.ImageUrl = url.QueryEscape(v.ImageUrl)
 	}
 
-	resp := &JsonResponse{
-		Ok:   true,
-		Data: bks,
-	}
+	resp := make(JsonResponse)
+	resp["ok"] = true
+	resp["data"] = bks
 
 	WriteJson(w, resp)
 }
