@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 
 	"github.com/mtso/booker/server/models"
@@ -16,36 +15,6 @@ import (
 const SessionId = "sess_id"
 
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
-
-type JsonResponse struct {
-	Ok       bool        `json:"ok"`
-	Username string      `json:"username,omitempty"`
-	Message  string      `json:"message,omitempty"`
-	Data     interface{} `json:"data,omitempty"`
-}
-
-// type JsonResponse map[string]interface{}
-
-// type Flash struct {
-// 	Code    string `json:"code"`
-// 	Message string `json:"message"`
-// }
-
-// type ApiResponse struct {
-// 	Ok    bool        `json:"ok"`
-// 	Data  interface{} `json:"data"`
-// 	Flash Flash       `json:"flash"`
-// }
-
-func handleAuth(r *mux.Router) {
-	s := r.PathPrefix("/auth").Subrouter()
-
-	s.HandleFunc("/signup", PostSignup).Methods("POST")
-	s.HandleFunc("/login", PostLogin).Methods("POST")
-	s.HandleFunc("/logout", PostLogout).Methods("POST")
-	s.HandleFunc("/test", TestLogin).Methods("GET")
-	s.HandleFunc("/testroute", IsLoggedInMiddleware(TestEndpoint)).Methods("GET")
-}
 
 func TestLogin(w http.ResponseWriter, r *http.Request) {
 	// test that we save session ID properly
@@ -68,7 +37,6 @@ func TestEndpoint(w http.ResponseWriter, r *http.Request) {
 		Ok:      true,
 		Message: u + " is logged into redirecting endpoint",
 	})
-	// w.Write([]byte(u + " is logged into redirecting endpoint"))
 }
 
 // query := r.URL.Query()
