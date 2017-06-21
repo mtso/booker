@@ -6,18 +6,50 @@ import (
 	"github.com/gorilla/mux"
 
 	"github.com/mtso/booker/server/models"
-	// "github.com/mtso/booker/server/utils"
+	"github.com/mtso/booker/server/utils"
 )
 
 // {"city":"[city]","state":"[state]","password":"[new password]"}
 func PostUser(w http.ResponseWriter, r *http.Request) {
-	// body := utils.ParseRequestBody(r)
-	// city, cityOk := body["city"]
-	// state, stateOk := body["state"]
+	isLocationUpdated := false
+	isPasswordUpdated := false
 
-	// if cityOk && stateOk {
-	// 	models.Users.Find()
-	// }
+	username, err := GetUsername(r)
+	if err != nil {
+		WriteError(w, err)
+		return
+	}
+
+	body := utils.ParseRequestBody(r)
+	city, cityOk := body["city"]
+	state, stateOk := body["state"]
+
+	if cityOk && stateOk {
+		user, err := models.Users.Find(username)
+		if err != nil {
+			WriteError(w, err)
+			return
+		}
+
+		err = user.SetLocation(city.(string), state.(string))
+		if err != nil {
+			WriteError(w, err)
+			return
+		}
+
+		isLocationUpdated = true
+	}
+
+	resp := make(JsonResponse)
+	resp["ok"] = isLocationUpdated || isPasswordUpdated
+	if isPasswordUpdated {
+		resp["isPasswordUpdated"] = isPasswordUpdated
+	}
+	if isLocationUpdated {
+		resp["isLocationUpdated"] = isLocationUpdated
+	}
+
+	WriteJson(w, resp)
 }
 
 // {"username":"[username]"}
@@ -39,8 +71,17 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	resp := make(JsonResponse)
 	resp["ok"] = true
 	resp["username"] = user.Username
-	resp["city"] = user.City.String
-	resp["state"] = user.State.String
+
+	// if city, err := user.City.Value(); err != nil {
+	// 	resp["city"] = city
+	// }
+	// if state, err := user.State.Value(); err != nil {
+	// 	resp["state"] = state
+	// }
+	city, _ := user.City.Value()
+	state, _ := user.State.Value()
+	resp["city"] = city
+	resp["state"] = state
 
 	WriteJson(w, resp)
 }

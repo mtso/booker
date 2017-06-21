@@ -24,112 +24,111 @@ func TestUpdateLocation(t *testing.T) {
 	ts := httptest.NewServer(app.Handler)
 	defer ts.Close()
 
-	err := AuthenticateSession(ts, client)
+	err := AuthenticateSession(ts, client, User1, Pass1)
 	mustEqual(err, nil, "authenticate session")
 
 	data := []byte(`{"city":"Test City","state":"Test State"}`)
 	req, err := http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
-	mustEqual(err, nil, "prep post request to /api/user")
+	mustEqual(err, nil, "prep POST request to /api/user")
 
 	res, err := client.Do(req)
 	mustEqual(err, nil, "reach server")
 
 	body, err := ParseBody(res)
-	mustEqual(err, nil, "encode response in JSON")
+	mustEqual(err, nil, "encode POST response in JSON")
 
 	assertEqual(body["ok"], true, "good request")
+	assertEqual(body["isLocationUpdated"], true, "updated location")
 
-	req, err = http.NewRequest("GET", ts.URL+"/api/user", nil)
-	mustEqual(err, nil, "prep get request to /api/user")
+	req, err = http.NewRequest("GET", ts.URL+"/api/user/"+User1, nil)
+	mustEqual(err, nil, "prep GET request to /api/user")
 
 	res, err = client.Do(req)
 	mustEqual(err, nil, "reach server")
 
 	body, err = ParseBody(res)
-	mustEqual(err, nil, "encode response in JSON")
+	mustEqual(err, nil, "encode GET response in JSON")
 
-	assertEqual(body["username"], "wiggs", "recognize username")
+	assertEqual(body["username"], User1, "recognize username")
 	assertEqual(body["city"], "Test City", "save city")
 	assertEqual(body["state"], "Test State", "save state")
 }
 
-func TestUpdatePassword(t *testing.T) {
-	// Set up assertions
-	assertEqual := MakeAssertEqual(t)
-	mustEqual := MakeMustEqual(t)
+// func TestUpdatePassword(t *testing.T) {
+// 	// Set up assertions
+// 	assertEqual := MakeAssertEqual(t)
+// 	mustEqual := MakeMustEqual(t)
 
-	// Init client with cookie jar
-	client := MakeCookieMonster()
+// 	// Init client with cookie jar
+// 	client := MakeCookieMonster()
 
-	// Start test server
-	app := config.InitializeApp()
-	defer app.Db.Close()
+// 	// Start test server
+// 	app := config.InitializeApp()
+// 	defer app.Db.Close()
 
-	ts := httptest.NewServer(app.Handler)
-	defer ts.Close()
+// 	ts := httptest.NewServer(app.Handler)
+// 	defer ts.Close()
 
-	err := AuthenticateSession(ts, client)
-	mustEqual(err, nil, "authenticate session")
+// 	req, err := http.NewRequest("POST", ts.URL+"/auth/signup", bytes.NewBuffer([]byte(`{"username":"` + User3 + `","password":"` + Pass3 + `"}`)))
 
-	// Update password
-	data := []byte(`{"password":"muffins"}`)
-	req, err := http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
-	mustEqual(err, nil, "prep post request to /api/user")
+// 	err := AuthenticateSession(ts, client, User3, Pass3)
+// 	mustEqual(err, nil, "authenticate session")
 
-	res, err := client.Do(req)
-	mustEqual(err, nil, "reach server")
+// 	// Update password
+// 	data := []byte(`{"password":"muffins"}`)
+// 	req, err := http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
+// 	mustEqual(err, nil, "prep post request to /api/user")
 
-	body, err := ParseBody(res)
-	mustEqual(err, nil, "encode response in JSON")
+// 	res, err := client.Do(req)
+// 	mustEqual(err, nil, "reach server")
 
-	assertEqual(body["ok"], true, "get a JSON API response")
-	assertEqual(body["message"], "password changed", "successfully change password")
+// 	body, err := ParseBody(res)
+// 	mustEqual(err, nil, "encode response in JSON")
 
-	// Logout
-	req, err = http.NewRequest("POST", ts.URL+"/auth/logout", nil)
-	mustEqual(err, nil, "prep post request to /auth/logout")
+// 	assertEqual(body["ok"], true, "get a JSON API response")
+// 	assertEqual(body["message"], "password changed", "successfully change password")
 
-	res, err = client.Do(req)
-	mustEqual(err, nil, "reach server")
+// 	// Logout
+// 	req, err = http.NewRequest("POST", ts.URL+"/auth/logout", nil)
+// 	mustEqual(err, nil, "prep post request to /auth/logout")
 
-	body, err = ParseBody(res)
-	mustEqual(err, nil, "encode response in JSON")
-	assertEqual(body["ok"], true, "get a JSON API response")
+// 	res, err = client.Do(req)
+// 	mustEqual(err, nil, "reach server")
 
-	// Log in with new password
-	err = AuthenticateSession(ts, client, "wiggs", "muffins")
-	mustEqual(err, nil, "authenticate with new password")
+// 	body, err = ParseBody(res)
+// 	mustEqual(err, nil, "encode response in JSON")
+// 	assertEqual(body["ok"], true, "get a JSON API response")
 
-	// Change password back
-	data = []byte(`{"password":"cupcakes"}`)
-	req, err = http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
-	mustEqual(err, nil, "prep post request to /api/user")
+// 	// Log in with new password
+// 	err = AuthenticateSession(ts, client, "wiggs", "muffins")
+// 	mustEqual(err, nil, "authenticate with new password")
 
-	res, err = client.Do(req)
-	mustEqual(err, nil, "reach server")
+// 	// Change password back
+// 	data = []byte(`{"password":"cupcakes"}`)
+// 	req, err = http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
+// 	mustEqual(err, nil, "prep post request to /api/user")
 
-	body, err = ParseBody(res)
-	mustEqual(err, nil, "encode response in JSON")
+// 	res, err = client.Do(req)
+// 	mustEqual(err, nil, "reach server")
 
-	assertEqual(body["ok"], true, "get a JSON API response")
-	assertEqual(body["message"], "password changed", "successfully change password")
-}
+// 	body, err = ParseBody(res)
+// 	mustEqual(err, nil, "encode response in JSON")
+
+// 	assertEqual(body["ok"], true, "get a JSON API response")
+// 	assertEqual(body["message"], "password changed", "successfully change password")
+// }
 
 func TestGetUser(t *testing.T) {
 	assertEqual := MakeAssertEqual(t)
 	mustEqual := MakeMustEqual(t)
 
-	// Init client with cookie jar
-	// client := MakeCookieMonster()
-
 	// Start test server
 	app := config.InitializeApp()
-	defer app.Db.Close()
-
 	ts := httptest.NewServer(app.Handler)
+	defer app.Db.Close()
 	defer ts.Close()
 
-	res, err := http.Get(ts.URL + "/api/user/wiggs")
+	res, err := http.Get(ts.URL + "/api/user/" + User1)
 	mustEqual(err, nil, "execute GET request to /api/user")
 	assertEqual(res.StatusCode, 200, "finds path")
 
@@ -139,7 +138,7 @@ func TestGetUser(t *testing.T) {
 	assertEqual(body["ok"], true, "succeed request")
 	username, ok := body["username"]
 	assertEqual(ok, true, "username exists")
-	assertEqual(username, "wiggs", "correct username")
+	assertEqual(username, User1, "correct username")
 	_, ok = body["city"]
 	assertEqual(ok, true, "city exists")
 	_, ok = body["state"]
