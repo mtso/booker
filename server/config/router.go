@@ -20,8 +20,7 @@ func makeRootHandler() *mux.Router {
 	auth.HandleFunc("/signup", PostSignup).Methods("POST")
 	auth.HandleFunc("/login", PostLogin).Methods("POST")
 	auth.HandleFunc("/logout", PostLogout).Methods("POST")
-	auth.HandleFunc("/test", TestLogin).Methods("GET")
-	auth.HandleFunc("/testroute", IsLoggedInMiddleware(TestEndpoint)).Methods("GET")
+	// auth.HandleFunc("/test", TestLogin).Methods("GET")
 
 	// API endpoint
 	api := router.PathPrefix("/api").Subrouter()

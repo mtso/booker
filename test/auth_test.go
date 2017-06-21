@@ -1,7 +1,6 @@
 package test
 
 import (
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -9,63 +8,6 @@ import (
 
 	"github.com/mtso/booker/server/config"
 )
-
-func TestApp(t *testing.T) {
-	// Set up assertions
-	assertEqual := MakeAssertEqual(t)
-
-	// Start test server
-	app := config.InitializeApp()
-	ts := httptest.NewServer(app.Handler)
-	defer app.Db.Close()
-	defer ts.Close()
-
-	// Login
-	buf := BufferUser(User1, Pass1)
-	res, err := http.Post(ts.URL+"/auth/login", "application/json", buf)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	resp, err := ParseBody(res)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Assert response body
-	assertEqual(err, nil, "No error in parsing JSON")
-	assertEqual(res.StatusCode, 200, "Status code 200 for login")
-	assertEqual(resp["ok"], true, "Response is ok")
-	assertEqual(resp["message"], User1+" logged in.", "Login message matches correct username")
-
-	cookies := MapCookies(res.Cookies())
-	sess_cookie := cookies["sess_id"]
-
-	// Try testroute
-	req, err := http.NewRequest("GET", ts.URL+"/auth/testroute", nil)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	req.AddCookie(sess_cookie)
-
-	client := &http.Client{}
-	res, err = client.Do(req)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	// Assert response body
-	assertEqual(res.StatusCode, 200, "Status 200 for /testroute")
-
-	resp, err = ParseBody(res)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	assertEqual(resp["ok"], true, "Response is ok")
-	assertEqual(resp["message"], User1+" is logged into redirecting endpoint", "Saves cookie session")
-}
 
 func TestLoginLogout(t *testing.T) {
 	// Set up assertions
@@ -120,31 +62,4 @@ func TestLoginLogout(t *testing.T) {
 
 	assertEqual(resp["ok"], true, "")
 	assertEqual(resp["message"], User1+" logged out.", "logout message matches correct username")
-}
-
-func TestLoginTest(t *testing.T) {
-	// Set up assertions
-	assertEqual := MakeAssertEqual(t)
-	mustEqual := MakeMustEqual(t)
-
-	// Init client with cookie jar
-	client := MakeCookieMonster()
-
-	// Start test server
-	app := config.InitializeApp()
-	ts := httptest.NewServer(app.Handler)
-	defer app.Db.Close()
-	defer ts.Close()
-
-	err := AuthenticateSession(ts, client, User1, Pass1)
-	mustEqual(err, nil, "authenticate session")
-
-	req, err := http.NewRequest("GET", ts.URL+"/auth/test", nil)
-	mustEqual(err, nil, "prep request to /auth/test")
-	resp, err := client.Do(req)
-	assertEqual(err, nil, "test fine")
-
-	body, err := ioutil.ReadAll(resp.Body)
-	mustEqual(err, nil, "validate body")
-	assertEqual(string(body), User1 + " is logged in", "login correct username")
 }
