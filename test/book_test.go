@@ -19,9 +19,8 @@ func TestGetBooks(t *testing.T) {
 
 	// Start test server
 	app := config.InitializeApp()
-	defer app.Db.Close()
-
 	ts := httptest.NewServer(app.Handler)
+	defer app.Db.Close()
 	defer ts.Close()
 
 	req, err := http.NewRequest("GET", ts.URL+"/api/books", nil)
@@ -65,3 +64,18 @@ func TestGetBooks(t *testing.T) {
 		assertEqual(false, true, "title is a string")
 	}
 }
+
+// func TestPostBook(t *testing.T) {
+// 	// Set up assertions
+// 	assertEqual := MakeAssertEqual(t)
+// 	mustEqual := MakeMustEqual(t)
+
+// 	// Init client with cookie jar
+// 	client := MakeCookieMonster()
+
+// 	// Start test server
+// 	app := config.InitializeApp()
+// 	ts := httptest.NewServer(app.Handler)
+// 	defer app.Db.Close()
+// 	defer ts.Close()
+// }

@@ -84,7 +84,7 @@ func (u *User) Create() (err error) {
 }
 
 func (u *User) SetLocation(city string, state string) (err error) {
-	_, err = Users.db.Exec(UpdateUserLocation, city, state)
+	_, err = Users.db.Exec(UpdateUserLocation, u.Username, city, state)
 	return
 }
 

@@ -1,6 +1,7 @@
 package test
 
 import (
+	"bytes"
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
@@ -10,6 +11,10 @@ import (
 
 	"golang.org/x/net/publicsuffix"
 )
+
+func BufferUser(user, pass string) *bytes.Buffer {
+	return bytes.NewBuffer([]byte(`{"username":"` + user + `","password":"` + pass + `"}`))
+}
 
 func MapCookies(cookies []*http.Cookie) map[string]*http.Cookie {
 	m := make(map[string]*http.Cookie)

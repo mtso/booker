@@ -49,7 +49,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		resp["isLocationUpdated"] = isLocationUpdated
 	}
 
-	return
+	WriteJson(w, resp)
 }
 
 // {"username":"[username]"}

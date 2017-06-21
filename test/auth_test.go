@@ -22,13 +22,12 @@ func TestApp(t *testing.T) {
 
 	// Start test server
 	app := config.InitializeApp()
-	defer app.Db.Close()
-
 	ts := httptest.NewServer(app.Handler)
+	defer app.Db.Close()
 	defer ts.Close()
 
 	// Login
-	buf := bytes.NewBuffer([]byte(`{"username":"wiggs","password":"cupcakes"}`))
+	buf := BufferUser(User1, Pass1)
 	res, err := http.Post(ts.URL+"/auth/login", "application/json", buf)
 	if err != nil {
 		t.Fatal(err)
@@ -43,7 +42,7 @@ func TestApp(t *testing.T) {
 	assertEqual(err, nil, "No error in parsing JSON")
 	assertEqual(res.StatusCode, 200, "Status code 200 for login")
 	assertEqual(resp["ok"], true, "Response is ok")
-	assertEqual(resp["message"], "wiggs logged in.", "Login message matches correct username")
+	assertEqual(resp["message"], User1+" logged in.", "Login message matches correct username")
 
 	cookies := MapCookies(res.Cookies())
 	sess_cookie := cookies["sess_id"]
@@ -71,7 +70,7 @@ func TestApp(t *testing.T) {
 	}
 
 	assertEqual(resp["ok"], true, "Response is ok")
-	assertEqual(resp["message"], "wiggs is logged into redirecting endpoint", "Saves cookie session")
+	assertEqual(resp["message"], User1+" is logged into redirecting endpoint", "Saves cookie session")
 }
 
 func TestLoginLogout(t *testing.T) {
@@ -84,13 +83,13 @@ func TestLoginLogout(t *testing.T) {
 
 	// Start test server
 	app := config.InitializeApp()
-	defer app.Db.Close()
-
 	ts := httptest.NewServer(app.Handler)
+	defer app.Db.Close()
 	defer ts.Close()
 
 	// Login
-	req, err := http.NewRequest("POST", ts.URL+"/auth/login", bytes.NewBuffer([]byte(`{"username":"wiggs","password":"cupcakes"}`)))
+	buf := BufferUser(User1, Pass1)
+	req, err := http.NewRequest("POST", ts.URL+"/auth/login", buf)
 	mustEqual(err, nil, "make request: POST /auth/login")
 	req.Header["Content-Type"] = append(req.Header["Content-Type"], "application/json")
 
@@ -110,7 +109,7 @@ func TestLoginLogout(t *testing.T) {
 	resp, err := ParseBody(res)
 	mustEqual(err, nil, "login response is JSON encoded")
 	assertEqual(resp["ok"], true, "login is ok")
-	assertEqual(resp["message"], "wiggs logged in.", "Login message matches correct username")
+	assertEqual(resp["message"], User1+" logged in.", "Login message matches correct username")
 
 	// Logout with cookie
 	req, err = http.NewRequest("POST", ts.URL+"/auth/logout", nil)
@@ -126,7 +125,7 @@ func TestLoginLogout(t *testing.T) {
 	mustEqual(err, nil, "logout response is JSON encoded")
 
 	assertEqual(resp["ok"], true, "")
-	assertEqual(resp["message"], "wiggs logged out.", "logout message matches correct username")
+	assertEqual(resp["message"], User1+" logged out.", "logout message matches correct username")
 }
 
 func TestLoginTest(t *testing.T) {
@@ -139,9 +138,8 @@ func TestLoginTest(t *testing.T) {
 
 	// Start test server
 	app := config.InitializeApp()
-	defer app.Db.Close()
-
 	ts := httptest.NewServer(app.Handler)
+	defer app.Db.Close()
 	defer ts.Close()
 
 	err := AuthenticateSession(ts, client)
