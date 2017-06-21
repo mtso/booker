@@ -21,9 +21,10 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 		v.ImageUrl = url.QueryEscape(v.ImageUrl)
 	}
 
-	resp := make(JsonResponse)
-	resp["ok"] = true
-	resp["data"] = bks
+	resp := &JsonResponse{
+		"ok": true,
+		"data": bks,
+	}
 
 	WriteJson(w, resp)
 }
@@ -43,9 +44,10 @@ func GetMyBooks(w http.ResponseWriter, r *http.Request) {
 		v.ImageUrl = url.QueryEscape(v.ImageUrl)
 	}
 
-	resp := make(JsonResponse)
-	resp["ok"] = true
-	resp["data"] = bks
+	resp := &JsonResponse{
+		"ok": true,
+		"data": bks,
+	}
 
 	WriteJson(w, resp)
 }
@@ -87,9 +89,10 @@ func PostBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := make(JsonResponse)
-	resp["ok"] = true
-	resp["message"] = "Created book: " + title.(string)
+	resp := &JsonResponse{
+		"ok": true,
+		"message": "Created book: " + title.(string),
+	}
 
 	WriteJson(w, resp)
 }

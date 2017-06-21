@@ -54,13 +54,15 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		isPasswordUpdated = true
 	}
 
-	resp := make(JsonResponse)
-	resp["ok"] = isLocationUpdated || isPasswordUpdated
+	resp := &JsonResponse{
+		"ok": isLocationUpdated || isPasswordUpdated,
+	}
+
 	if isPasswordUpdated {
-		resp["isPasswordUpdated"] = isPasswordUpdated
+		resp.Set("isPasswordUpdated", isPasswordUpdated)
 	}
 	if isLocationUpdated {
-		resp["isLocationUpdated"] = isLocationUpdated
+		resp.Set("isLocationUpdated", isLocationUpdated)
 	}
 
 	WriteJson(w, resp)
