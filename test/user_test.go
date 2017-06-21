@@ -54,69 +54,68 @@ func TestUpdateLocation(t *testing.T) {
 	assertEqual(body["state"], "Test State", "save state")
 }
 
-// func TestUpdatePassword(t *testing.T) {
-// 	// Set up assertions
-// 	assertEqual := MakeAssertEqual(t)
-// 	mustEqual := MakeMustEqual(t)
+func TestUpdatePassword(t *testing.T) {
+	// Set up assertions
+	assertEqual := MakeAssertEqual(t)
+	mustEqual := MakeMustEqual(t)
 
-// 	// Init client with cookie jar
-// 	client := MakeCookieMonster()
+	// Init client with cookie jar
+	client := MakeCookieMonster()
 
-// 	// Start test server
-// 	app := config.InitializeApp()
-// 	defer app.Db.Close()
+	// Start test server
+	app := config.InitializeApp()
+	ts := httptest.NewServer(app.Handler)
+	defer app.Db.Close()
+	defer ts.Close()
 
-// 	ts := httptest.NewServer(app.Handler)
-// 	defer ts.Close()
+	err := AuthenticateSession(ts, client, User3, Pass3)
+	mustEqual(err, nil, "authenticate session")
 
-// 	req, err := http.NewRequest("POST", ts.URL+"/auth/signup", bytes.NewBuffer([]byte(`{"username":"` + User3 + `","password":"` + Pass3 + `"}`)))
+	newPass := "testpass3new"
 
-// 	err := AuthenticateSession(ts, client, User3, Pass3)
-// 	mustEqual(err, nil, "authenticate session")
+	// Update password
+	data := []byte(`{"password":"` + newPass + `"}`)
+	req, err := http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
+	mustEqual(err, nil, "prep post request to /api/user")
 
-// 	// Update password
-// 	data := []byte(`{"password":"muffins"}`)
-// 	req, err := http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
-// 	mustEqual(err, nil, "prep post request to /api/user")
+	res, err := client.Do(req)
+	mustEqual(err, nil, "reach server")
 
-// 	res, err := client.Do(req)
-// 	mustEqual(err, nil, "reach server")
+	body, err := ParseBody(res)
+	mustEqual(err, nil, "encode response in JSON")
 
-// 	body, err := ParseBody(res)
-// 	mustEqual(err, nil, "encode response in JSON")
+	assertEqual(body["ok"], true, "get a JSON API response")
+	assertEqual(body["isPasswordUpdated"], true, "successfully change password")
 
-// 	assertEqual(body["ok"], true, "get a JSON API response")
-// 	assertEqual(body["message"], "password changed", "successfully change password")
+	// Logout
+	req, err = http.NewRequest("POST", ts.URL+"/auth/logout", nil)
+	mustEqual(err, nil, "prep post request to /auth/logout")
 
-// 	// Logout
-// 	req, err = http.NewRequest("POST", ts.URL+"/auth/logout", nil)
-// 	mustEqual(err, nil, "prep post request to /auth/logout")
+	res, err = client.Do(req)
+	mustEqual(err, nil, "reach server")
 
-// 	res, err = client.Do(req)
-// 	mustEqual(err, nil, "reach server")
+	body, err = ParseBody(res)
+	mustEqual(err, nil, "encode response in JSON")
+	assertEqual(body["ok"], true, "get a JSON API response")
 
-// 	body, err = ParseBody(res)
-// 	mustEqual(err, nil, "encode response in JSON")
-// 	assertEqual(body["ok"], true, "get a JSON API response")
+	// Log in with new password
+	err = AuthenticateSession(ts, client, User3, newPass)
+	mustEqual(err, nil, "authenticate with new password")
 
-// 	// Log in with new password
-// 	err = AuthenticateSession(ts, client, "wiggs", "muffins")
-// 	mustEqual(err, nil, "authenticate with new password")
+	// Change password back
+	data = []byte(`{"password":"` + Pass3 + `"}`)
+	req, err = http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
+	mustEqual(err, nil, "prep post request to /api/user")
 
-// 	// Change password back
-// 	data = []byte(`{"password":"cupcakes"}`)
-// 	req, err = http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
-// 	mustEqual(err, nil, "prep post request to /api/user")
+	res, err = client.Do(req)
+	mustEqual(err, nil, "reach server")
 
-// 	res, err = client.Do(req)
-// 	mustEqual(err, nil, "reach server")
+	body, err = ParseBody(res)
+	mustEqual(err, nil, "encode response in JSON")
 
-// 	body, err = ParseBody(res)
-// 	mustEqual(err, nil, "encode response in JSON")
-
-// 	assertEqual(body["ok"], true, "get a JSON API response")
-// 	assertEqual(body["message"], "password changed", "successfully change password")
-// }
+	assertEqual(body["ok"], true, "get a JSON API response")
+	assertEqual(body["isPasswordUpdated"], true, "successfully change password")
+}
 
 func TestGetUser(t *testing.T) {
 	assertEqual := MakeAssertEqual(t)

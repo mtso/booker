@@ -103,7 +103,7 @@ func TestMain(m *testing.M) {
 
 	code := m.Run()
 	// drop tables
-	// dropTables()
+	dropTables()
 
 	os.Exit(code)
 }
