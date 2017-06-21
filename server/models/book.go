@@ -29,6 +29,15 @@ const (
 		WHERE users.id = books.user_id
 		ORDER BY books.id DESC
 		OFFSET $1 LIMIT $2`
+	SelectMyBooks = `SELECT
+		DISTINCT ON (books.id) 
+			books.id
+			, title
+			, isbn
+			, image_url
+			, username
+		FROM Books, Users
+		WHERE users.id = books.user_id AND users.username = $1`
 	SelectBooksByUserId = `SELECT id, title, isbn, image_url, user_id FROM Books
 		WHERE user_id = $1 ORDER DESC LIMIT 10`
 	InsertBook     = `INSERT INTO Books (title, isbn, image_url, user_id) VALUES ($1, $2, $3, $4)`
@@ -76,6 +85,25 @@ func (s BookSchema) GetBooks(page ...int) ([]Book, error) {
 	}
 
 	rows, err := s.db.Query(SelectBooks, offset, count)
+	if err != nil {
+		return nil, err
+	}
+
+	bks := make([]Book, 0)
+	for rows.Next() {
+		var bk Book
+		err := rows.Scan(&bk.Id, &bk.Title, &bk.Isbn, &bk.ImageUrl, &bk.Username)
+		if err != nil {
+			return nil, err
+		}
+		bks = append(bks, bk)
+	}
+	return bks, nil
+}
+
+// Sketchy GetMyBooks where user.username == username
+func (s BookSchema) GetMyBooks(username string) ([]Book, error) {
+	rows, err := s.db.Query(SelectMyBooks, username)
 	if err != nil {
 		return nil, err
 	}

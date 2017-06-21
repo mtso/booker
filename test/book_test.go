@@ -110,18 +110,3 @@ func TestGetMyBooks(t *testing.T) {
 		assertEqual(u, User1, "belongs to authed user")
 	}
 }
-
-// func TestPostBook(t *testing.T) {
-// 	// Set up assertions
-// 	assertEqual := MakeAssertEqual(t)
-// 	mustEqual := MakeMustEqual(t)
-
-// 	// Init client with cookie jar
-// 	client := MakeCookieMonster()
-
-// 	// Start test server
-// 	app := config.InitializeApp()
-// 	ts := httptest.NewServer(app.Handler)
-// 	defer app.Db.Close()
-// 	defer ts.Close()
-// }
