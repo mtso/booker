@@ -20,7 +20,10 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	body := utils.ParseRequestBody(r)
+	body, err := utils.ParseRequestBody(r)
+	if WriteErrorResponse(w, err) {
+		return
+	}
 	city, cityOk := body["city"]
 	state, stateOk := body["state"]
 

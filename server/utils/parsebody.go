@@ -24,11 +24,11 @@ func ParseResponseBody(r *http.Response) (js map[string]interface{}, err error) 
 }
 
 // BodyParser?
-func ParseRequestBody(r *http.Request) (m map[string]interface{}) {
+func ParseRequestBody(r *http.Request) (m map[string]interface{}, err error) {
 	decoder := json.NewDecoder(r.Body)
 	var raw interface{}
 
-	err := decoder.Decode(&raw)
+	err = decoder.Decode(&raw)
 	if err != nil {
 		log.Println(err)
 		return
