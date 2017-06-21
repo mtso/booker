@@ -20,6 +20,6 @@ func TestApp(t *testing.T) {
 	defer ts.Close()
 
 	resp, err := http.Get(ts.URL)
-	mustEqual(err, nil, "make GET request to root: " + ts.URL)
+	mustEqual(err, nil, "make GET request to root: "+ts.URL)
 	assertEqual(resp.StatusCode, 200, "reach server route")
 }
