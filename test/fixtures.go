@@ -31,3 +31,9 @@ var testbooks = []struct {
 	{"1Q84", "9786074213720", "https://images-na.ssl-images-amazon.com/images/I/41aXLI626BL._SX323_BO1,204,203,200_.jpg"},
 	{"Artemis Fowl", "9780786848690", "http://t2.gstatic.com/images?q=tbn:ANd9GcTnSUKt1gyCI_X4amzC4lHk__we3zYxtDkjWPK73RxQa9m06-s0"},
 }
+
+var user2book = struct {
+	Title    string `json:"title"`
+	Isbn     string `json:"isbn"`
+	ImageUrl string `json:"image_url"`
+}{"Infinite Jest", "9783763262847", "http://t1.gstatic.com/images?q=tbn:ANd9GcTWPEULPkAOFKwLh9EQcd35GvbOdL91vPWDzZ8X6vgfkOnkt_mW"}

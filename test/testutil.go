@@ -6,11 +6,48 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/cookiejar"
+	"net/http/httptest"
+	"net/url"
 	"reflect"
 	"testing"
 
 	"golang.org/x/net/publicsuffix"
 )
+
+// Login helper
+func AuthenticateSession(ts *httptest.Server, client *http.Client, user ...string) error {
+	username := User1
+	password := Pass1
+	if len(user) > 1 {
+		username = user[0]
+		password = user[1]
+	}
+	buf := BufferUser(username, password)
+
+	// Login
+	req, err := http.NewRequest("POST", ts.URL+"/auth/login", buf)
+	if err != nil {
+		return err
+	}
+	req.Header["Content-Type"] = append(req.Header["Content-Type"], "application/json")
+
+	res, err := client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	// Save session cookie
+	sess_cookie := FilterCookies(res.Cookies(), func(c *http.Cookie) bool {
+		return c.Name == "sess_id"
+	})
+	cookieurl, err := url.Parse(ts.URL)
+	if err != nil {
+		return err
+	}
+
+	client.Jar.SetCookies(cookieurl, sess_cookie)
+	return nil
+}
 
 func BufferUser(user, pass string) *bytes.Buffer {
 	return bytes.NewBuffer([]byte(`{"username":"` + user + `","password":"` + pass + `"}`))
