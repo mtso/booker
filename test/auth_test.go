@@ -9,34 +9,12 @@ import (
 	"testing"
 
 	"github.com/mtso/booker/server/config"
-	"github.com/mtso/booker/server/controllers"
 )
 
 const (
 	DefaultUser = "wiggs"
 	DefaultPass = "cupcakes"
 )
-
-func TestTest(t *testing.T) {
-	ts := httptest.NewServer(controllers.Root)
-	defer ts.Close()
-
-	buf := bytes.NewBuffer([]byte("hello~"))
-
-	res, err := http.Post(ts.URL+"/test", "application/json", buf)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	resp, err := ParseBody(res)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if !resp["ok"].(bool) {
-		t.Error("expected response ok to be true")
-	}
-}
 
 func TestApp(t *testing.T) {
 	// Set up assertions

@@ -7,45 +7,17 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 
 	"github.com/mtso/booker/server/models"
+	"github.com/mtso/booker/server/utils"
 )
 
 const SessionId = "sess_id"
 
+var ErrNoUsername = errors.New("No username found for session")
+
 var store = sessions.NewCookieStore([]byte(os.Getenv("SESSION_SECRET")))
-
-type JsonResponse struct {
-	Ok       bool        `json:"ok"`
-	Username string      `json:"username,omitempty"`
-	Message  string      `json:"message,omitempty"`
-	Data     interface{} `json:"data,omitempty"`
-}
-
-// type JsonResponse map[string]interface{}
-
-// type Flash struct {
-// 	Code    string `json:"code"`
-// 	Message string `json:"message"`
-// }
-
-// type ApiResponse struct {
-// 	Ok    bool        `json:"ok"`
-// 	Data  interface{} `json:"data"`
-// 	Flash Flash       `json:"flash"`
-// }
-
-func handleAuth(r *mux.Router) {
-	s := r.PathPrefix("/auth").Subrouter()
-
-	s.HandleFunc("/signup", PostSignup).Methods("POST")
-	s.HandleFunc("/login", PostLogin).Methods("POST")
-	s.HandleFunc("/logout", PostLogout).Methods("POST")
-	s.HandleFunc("/test", TestLogin).Methods("GET")
-	s.HandleFunc("/testroute", IsLoggedInMiddleware(TestEndpoint)).Methods("GET")
-}
 
 func TestLogin(w http.ResponseWriter, r *http.Request) {
 	// test that we save session ID properly
@@ -64,17 +36,16 @@ func TestLogin(w http.ResponseWriter, r *http.Request) {
 
 func TestEndpoint(w http.ResponseWriter, r *http.Request) {
 	u, _ := GetUsername(r)
-	WriteJson(w, &JsonResponse{
-		Ok:      true,
-		Message: u + " is logged into redirecting endpoint",
-	})
-	// w.Write([]byte(u + " is logged into redirecting endpoint"))
+	resp := make(JsonResponse)
+	resp["ok"] = true
+	resp["message"] = u + " is logged into redirecting endpoint"
+	WriteJson(w, resp)
 }
 
 // query := r.URL.Query()
 // fmt.Printf("%v", query["username"])
 func PostSignup(w http.ResponseWriter, r *http.Request) {
-	body := ParseBody(r)
+	body := utils.ParseRequestBody(r)
 	user := body["username"].(string)
 	pass := body["password"].(string)
 
@@ -113,7 +84,7 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 }
 
 func PostLogin(w http.ResponseWriter, r *http.Request) {
-	body := ParseBody(r)
+	body := utils.ParseRequestBody(r)
 	user := body["username"].(string)
 	pass := body["password"].(string)
 
@@ -126,10 +97,9 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 		msg = err.Error()
 	}
 
-	response := &JsonResponse{
-		Ok:      success,
-		Message: msg,
-	}
+	resp := make(JsonResponse)
+	resp["ok"] = success
+	resp["message"] = msg
 
 	// Save session.
 	session, err := store.Get(r, SessionId)
@@ -144,7 +114,7 @@ func PostLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	WriteJson(w, response)
+	WriteJson(w, resp)
 }
 
 func WriteError(w http.ResponseWriter, err error, code ...int) {
@@ -160,11 +130,12 @@ func WriteErrorResponse(w http.ResponseWriter, err error, args ...int) bool {
 	if len(args) > 0 {
 		code = args[0]
 	}
-	errorResponse := &JsonResponse{
-		Ok:      false,
-		Message: err.Error(),
-	}
-	WriteJson(w, errorResponse, code)
+
+	resp := make(JsonResponse)
+	resp["ok"] = false
+	resp["message"] = err.Error()
+
+	WriteJson(w, resp, code)
 	return true
 }
 
@@ -201,10 +172,10 @@ func PostLogout(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp := &JsonResponse{
-		Ok:      true,
-		Message: username + " logged out.",
-	}
+	resp := make(JsonResponse)
+	resp["ok"] = true
+	resp["message"] = username + " logged out."
+
 	WriteJson(w, resp)
 }
 
@@ -222,8 +193,6 @@ func WriteJson(w http.ResponseWriter, response interface{}, code ...int) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(js)
 }
-
-var ErrNoUsername = errors.New("No username found for session")
 
 func GetUsername(r *http.Request) (string, error) {
 	session, err := store.Get(r, SessionId)
@@ -257,19 +226,4 @@ func IsLoggedInMiddleware(next http.HandlerFunc, args ...string) http.HandlerFun
 			http.Redirect(w, r, redirectUrl, http.StatusFound)
 		}
 	}
-}
-
-// BodyParser?
-func ParseBody(r *http.Request) (m map[string]interface{}) {
-	decoder := json.NewDecoder(r.Body)
-	var raw interface{}
-
-	err := decoder.Decode(&raw)
-	if err != nil {
-		log.Println(err)
-		return
-	}
-
-	m = raw.(map[string]interface{})
-	return
 }

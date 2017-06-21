@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/mtso/booker/server/controllers"
 	"github.com/mtso/booker/server/models"
 )
 
@@ -23,6 +22,6 @@ func InitializeApp() *App {
 
 	return &App{
 		db,
-		controllers.Root,
+		makeRootHandler(),
 	}
 }
