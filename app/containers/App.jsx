@@ -1,16 +1,18 @@
 import React from 'react'
 import { Route } from 'react-router'
-import Nav from '../components/Nav'
-import BookTableContainer from './BookTableContainer'
+import NavContainer from './NavContainer'
+import BookTableContainer from './BookBrowser'
 
-import BookCreator from '../components/BookCreator'
+import BookCreator from './BookCreator'
+import SigninForm from './SigninForm'
 
 const App = () => (
   <div>
-    <Nav />
-    <Route exact path='/' render={() => <BookTableContainer />} />
-    <Route path='/new' render={() => (<BookCreator />)} />
+    <NavContainer />
+    <Route path='/signup' component={SigninForm} />
   </div>
 )
+//    <Route exact path='/' render={() => <BookTableContainer />} />
+//    <Route path='/new' render={() => (<BookCreator />)} />
 
 export default App

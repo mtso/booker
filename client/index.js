@@ -3,9 +3,7 @@ import { render } from 'react-dom'
 import { BrowserRouter } from 'react-router-dom'
 import App from '../app'
 import { Provider } from 'react-redux'
-import { createStore } from 'redux'
-
-const store = createStore((state = {}) => state)
+import store from '../app/store'
 
 render(
   <Provider store={store}>
