@@ -64,8 +64,23 @@ describe('User signs in', function() {
       browser.assert.success()
     })
 
-    it('should go to /signup', function() {
+    it('should redirect to root', function() {
       browser.assert.url({ pathname: '/' })
+    })
+
+    describe('can log out', function() {
+      before(function(done) {
+        browser
+          .pressButton('Log Out', done)
+      })
+
+      it('should be successful', function() {
+        browser.assert.success()
+      })
+
+      it('should redirect to root', function() {
+        browser.assert.url({ pathname: '/' })
+      }) 
     })
   })
 })

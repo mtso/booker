@@ -15,9 +15,14 @@ const unAuthenticatedLinks = [
   }
 ]
 
-const authenticatedLinks = []
+const authenticatedLinks = [
+  {
+    to: '/logout',
+    displayText: 'Log Out',
+  }
+]
 
-const Nav = ({ isLoggedIn }) => (
+const Nav = ({ isLoggedIn, onLogout }) => (
   <nav>
     <Link to='/'>
       <h1 className='typemark'>Booker</h1>
@@ -30,6 +35,9 @@ const Nav = ({ isLoggedIn }) => (
       : unAuthenticatedLinks.map(({ displayText, ...props }, i) => (
         <NavLink {...props} key={i}>{displayText}</NavLink>
       ))
+    }
+    {
+      isLoggedIn && <button onClick={onLogout}>Log Out</button>// <Link onClick={onLogout}>Log Out</Link>
     }
   </nav>
 )

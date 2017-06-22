@@ -8,12 +8,23 @@ export const submitLogin = (username, password) => (dispatch) => request
     username,
     password,
   })
-  .then((resp) => {
-    const { ok } = resp.body
+  .then(({ body }) => body)
+  .then(({ ok }) => {
     if (ok) {
       dispatch(login(username))
     } else {
       throw new Error("invalid password")
+    }
+  })
+
+export const submitLogout = () => (dispatch) => request
+  .post('/auth/logout')
+  .then(({ body }) => body)
+  .then(({ ok }) => {
+    if (ok) {
+      dispatch(logout())
+    } else {
+      throw new Error("unable to logout")
     }
   })
 
