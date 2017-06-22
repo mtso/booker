@@ -28,7 +28,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	state, stateOk := body["state"]
 	newPass, newPassOk := body["password"]
 
-	user, err := models.Users.Find(username)
+	user, err := models.Users.Find(*username)
 	if err != nil {
 		WriteError(w, err)
 		return
