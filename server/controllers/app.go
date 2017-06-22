@@ -13,7 +13,7 @@ var indexTempl = template.Must(template.New("").Parse(string(indexTemplBytes)))
 func TEMPGetApp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 
-	data := struct{
+	data := struct {
 		State template.JS
 	}{
 		template.JS("{}"),
