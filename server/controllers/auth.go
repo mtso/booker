@@ -157,7 +157,7 @@ func PostLogout(w http.ResponseWriter, r *http.Request) {
 
 	resp := make(JsonResponse)
 	resp["ok"] = true
-	resp["message"] = username + " logged out."
+	resp["message"] = *username + " logged out."
 
 	WriteJson(w, resp)
 }
@@ -177,21 +177,24 @@ func WriteJson(w http.ResponseWriter, response interface{}, code ...int) {
 	w.Write(js)
 }
 
-func GetUsername(r *http.Request) (string, error) {
+// Helpers
+
+func GetUsername(r *http.Request) (*string, error) {
 	session, err := store.Get(r, SessionId)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
 	if found, ok := session.Values["username"]; ok && found != nil {
-		return found.(string), nil
+		username := found.(string)
+		return &username, nil
 	} else {
-		return "", ErrNoUsername
+		return nil, ErrNoUsername
 	}
 }
 
 func IsLoggedIn(r *http.Request) (bool, error) {
 	username, err := GetUsername(r)
-	return username != "", err
+	return username != nil, err
 }
 
 func IsLoggedInMiddleware(next http.HandlerFunc, args ...string) http.HandlerFunc {

@@ -35,7 +35,7 @@ func GetMyBooks(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bks, err := models.Books.GetMyBooks(username)
+	bks, err := models.Books.GetMyBooks(*username)
 	if WriteErrorResponse(w, err) {
 		return
 	}
@@ -72,7 +72,7 @@ func PostBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := models.Users.Find(username)
+	user, err := models.Users.Find(*username)
 	if WriteErrorResponse(w, err) {
 		return
 	}
