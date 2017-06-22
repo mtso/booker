@@ -1,6 +1,6 @@
 const Browser = require('zombie')
 
-Browser.localhost('booker.com', process.env.PORT || 3750)
+Browser.localhost('mtso.io', process.env.PORT || 3750)
 
 describe('User signs in', function() {
   const browser = new Browser()

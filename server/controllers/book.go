@@ -22,7 +22,7 @@ func GetBooks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := &JsonResponse{
-		"ok": true,
+		"ok":   true,
 		"data": bks,
 	}
 
@@ -45,7 +45,7 @@ func GetMyBooks(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := &JsonResponse{
-		"ok": true,
+		"ok":   true,
 		"data": bks,
 	}
 
@@ -90,7 +90,7 @@ func PostBook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := &JsonResponse{
-		"ok": true,
+		"ok":      true,
 		"message": "Created book: " + title.(string),
 	}
 
