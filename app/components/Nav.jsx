@@ -1,15 +1,50 @@
 import React from 'react'
 import AuthenticationForm from './AuthenticationForm'
-import { Link } from 'react-router-dom'
+import { NavLink, Link, withRouter } from 'react-router-dom'
 
-const Nav = ({ isLoggedIn }) => (
+const unAuthenticatedLinks = [
+  {
+    to: '/signup',
+    activeStyle: {fontWeight: 'bold'},
+    displayText: 'Sign Up',
+  },
+  {
+    to: '/about',
+    activeStyle: {fontWeight: 'bold'},
+    displayText: 'About',    
+  }
+]
+
+const authenticatedLinks = [
+  {
+    to: '/logout',
+    displayText: 'Log Out',
+  }
+]
+
+const Nav = ({ isLoggedIn, onLogout }) => (
   <nav>
     <Link to='/'>
       <h1 className='typemark'>Booker</h1>
     </Link>
-    <Link to='/new'>Add Book</Link>
-    {!isLoggedIn && <AuthenticationForm />}
+    {
+      isLoggedIn
+      ? authenticatedLinks.map(({ displayText, ...props }, i) => (
+        <NavLink {...props} key={i}>{displayText}</NavLink>
+      ))
+      : unAuthenticatedLinks.map(({ displayText, ...props }, i) => (
+        <NavLink {...props} key={i}>{displayText}</NavLink>
+      ))
+    }
+    {
+      isLoggedIn && <button onClick={onLogout}>Log Out</button>// <Link onClick={onLogout}>Log Out</Link>
+    }
   </nav>
 )
+//    <NavLink to='/about' activeStyle={{fontWeight: 'bold'}}>About</NavLink>
+//    <NavLink to='/signin' activeStyle={{fontWeight: 'bold'}}>Sign In</NavLink>
+
+    // <Link to='/new'>Add Book</Link>
+    // {!isLoggedIn && <AuthenticationForm />}
 
 export default Nav

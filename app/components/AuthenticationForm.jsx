@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 
 const defaultAction = (e) => {
   e.preventDefault()
-  console.log(e.target.elements)
 }
 
 const AuthenticationForm = ({ buttonTitle, onSubmit }) => (
