@@ -1,0 +1,25 @@
+@import 'animations';
+
+.fade-in {
+  -webkit-animation: fadein 0.22s;
+}
+
+.modal-container {
+  position: fixed;
+  background-color: white;
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+}
+
+.modal-content {
+  position: relative;
+  margin: 0 auto;
+  width: 600px;
+  min-width: 600px;
+  display: block;
+  height: 100%;
+  overflow-y: scroll;
+}

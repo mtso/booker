@@ -1,5 +1,18 @@
-import { RECEIVE_BOOKS, RECEIVE_MYBOOKS, RECEIVE_BOOKSEARCH } from './types'
+import { RECEIVE_BOOK, RECEIVE_BOOKS, RECEIVE_MYBOOKS, RECEIVE_BOOKSEARCH } from './types'
 import request from 'superagent'
+
+// Async thunks
+
+export const getBook = (id) => (dispatch) => request
+  .get('/api/book/'+id)
+  .then(({ body }) => body)
+  .then(({ ok, book, message }) => {
+    if (ok) {
+      dispatch(receiveBook(book))
+    } else {
+      throw new Error(message)
+    }
+  })
 
 export const getBooks = () => (dispatch) => request
   .get('/api/books')
@@ -51,6 +64,18 @@ export const searchBooks = (q) => (dispatch) => request
     })
   })
   .then((books) => dispatch(receiveBookSearch(books)))
+
+export const addBook = (book) => (dispatch) => request
+  .post('/api/book')
+  .send(book)
+  .then(({ body }) => body)
+
+// Sync actions
+
+export const receiveBook = (book) => ({
+  type: RECEIVE_BOOK,
+  book,
+})
 
 export const receiveBookSearch = (search) => ({
   type: RECEIVE_BOOKSEARCH,

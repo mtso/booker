@@ -32,6 +32,7 @@ func makeRootHandler() *mux.Router {
 	api.HandleFunc("/user", GetUser).Methods("POST")
 
 	// API book* endpoints
+	api.HandleFunc("/book/{id:[0-9]+}", GetBook).Methods("GET")
 	api.HandleFunc("/book", IsLoggedInMiddleware(PostBook)).Methods("POST")
 	books := api.PathPrefix("/books").Subrouter()
 	books.HandleFunc("/mybooks", IsLoggedInMiddleware(GetMyBooks)).Methods("GET")

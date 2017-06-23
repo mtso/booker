@@ -9,6 +9,7 @@ const mapStateToProps = ({ username, books }) => (
   {
     isLoggedIn: !!username,
     books,
+    username,
   }
 )
 
@@ -19,7 +20,7 @@ const mapDispatchToProps = (dispatch, { match, isLoggedIn }) => ({
     .catch(console.warn)
 })
 
-const BookBrowser = ({ isLoggedIn, books, match }) => (
+const BookBrowser = ({ isLoggedIn, username, books, match }) => (
   <div>
     <div className='tab-container'>
       <NavLink
@@ -39,8 +40,19 @@ const BookBrowser = ({ isLoggedIn, books, match }) => (
           to='/new'
         >Add a Book</Link>}
     </div>
-    <Route exact path='/' component={() => (<BookTable books={books.all} />)} />
-    <PrivateRoute exact path='/mybooks' component={() => (<BookTable books={books.mybooks} />)} />
+    <Route exact path='/' component={() => (
+      <BookTable
+        books={books.all}
+        controls={(book) => {
+          if (book.username !== username) {
+            return (<button>Request Trade</button>)
+          }
+        }}
+      />
+    )} />
+    <PrivateRoute exact path='/mybooks' component={() => (
+      <BookTable books={books.mybooks} />
+    )} />
   </div>
 )
 

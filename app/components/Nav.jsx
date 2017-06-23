@@ -23,6 +23,11 @@ const authenticatedLinks = [
     displayText: 'Books',
   },
   {
+    to: '/trades',
+    activeClassName: 'active',
+    displayText: 'Trades',
+  },
+  {
     to: '/account',
     activeClassName: 'active',
     displayText: 'Account',
