@@ -5,12 +5,12 @@ import { NavLink, Link, withRouter } from 'react-router-dom'
 const unAuthenticatedLinks = [
   {
     to: '/signup',
-    activeStyle: {fontWeight: 'bold'},
+    activeClassName: 'active',
     displayText: 'Sign Up',
   },
   {
     to: '/about',
-    activeStyle: {fontWeight: 'bold'},
+    activeClassName: 'active',
     displayText: 'About',    
   },
 ]
@@ -19,12 +19,12 @@ const authenticatedLinks = [
   {
     to: '/',
     isActive: (_, { pathname }) => pathname === '/' || pathname === '/mybooks',
-    activeStyle: {fontWeight: 'bold'},
+    activeClassName: 'active',
     displayText: 'Books',
   },
   {
     to: '/account',
-    activeStyle: {fontWeight: 'bold'},
+    activeClassName: 'active',
     displayText: 'Account',
   },
 ]

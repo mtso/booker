@@ -34,3 +34,13 @@ a:hover, button:hover {
 .active:hover {
   color: darken($primary-color, 10%);
 }
+
+.tab-container {
+  margin-bottom: 1em;
+}
+
+.tablink {
+  font-size: 0.8em;
+  margin-right: 1em;
+  font-weight: 600;
+}

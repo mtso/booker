@@ -21,18 +21,23 @@ const mapDispatchToProps = (dispatch, { match, isLoggedIn }) => ({
 
 const BookBrowser = ({ isLoggedIn, books, match }) => (
   <div>
-    <div>
+    <div className='tab-container'>
       <NavLink
-        activeStyle={{fontWeight: 'bold'}}
+        className='tablink'
+        activeClassName='active'
         exact
         to='/'
       >All Books</NavLink>
       {isLoggedIn &&
         <NavLink
-          activeStyle={{fontWeight: 'bold'}}
+          className='tablink'
+          activeClassName='active'
           to='/mybooks'
         >My Books</NavLink>}
-      {isLoggedIn && <Link to='/new'>Add a Book</Link>}
+      {isLoggedIn && 
+        <Link
+          to='/new'
+        >Add a Book</Link>}
     </div>
     <Route exact path='/' component={() => (<BookTable books={books.all} />)} />
     <PrivateRoute exact path='/mybooks' component={() => (<BookTable books={books.mybooks} />)} />
