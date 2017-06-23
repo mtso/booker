@@ -3,20 +3,23 @@ import { Route } from 'react-router'
 import NavContainer from './NavContainer'
 import BookTableContainer from './BookBrowser'
 
-import BookCreator from './BookCreator'
 import SigninForm from './SigninForm'
 
 import { Link } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 import BookBrowser from './BookBrowser'
+import AccountFormContainer from './AccountFormContainer'
+import BookCreatorContainer from './BookCreatorContainer'
 
 const App = () => (
   <div>
-    <Link to='/test'>Test</Link>
     <NavContainer />
     <Route exact path='/' component={BookBrowser} />
+    <Route path='/mybooks' component={BookBrowser} />
     <Route path='/signup' component={SigninForm} />
     <PrivateRoute path='/test' render={() => (<p>in test route</p>)} />
+    <PrivateRoute path='/account' component={AccountFormContainer} />
+    <PrivateRoute path='/new' component={BookCreatorContainer} />
   </div>
 )
 

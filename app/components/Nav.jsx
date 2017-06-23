@@ -12,14 +12,25 @@ const unAuthenticatedLinks = [
     to: '/about',
     activeStyle: {fontWeight: 'bold'},
     displayText: 'About',    
-  }
+  },
 ]
 
 const authenticatedLinks = [
+  // {
+  //   to: '/logout',
+  //   displayText: 'Log Out',
+  // }
   {
-    to: '/logout',
-    displayText: 'Log Out',
-  }
+    to: '/',
+    exact: true,
+    activeStyle: {fontWeight: 'bold'},
+    displayText: 'Books',
+  },
+  {
+    to: '/account',
+    activeStyle: {fontWeight: 'bold'},
+    displayText: 'Account',
+  },
 ]
 
 const Nav = ({ isLoggedIn, onLogout }) => (

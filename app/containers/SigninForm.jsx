@@ -1,24 +1,33 @@
+import React from 'react'
 import { connect } from 'react-redux'
 import AuthenticationForm from '../components/AuthenticationForm'
 import { submitLogin } from '../actions/session'
-import { withRouter } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 
-const mapStateToProps = () => ({
+const mapStateToProps = ({ username }) => ({
   buttonTitle: 'Sign In',
+  isLoggedIn: username !== null,
 })
 
-const mapDispatchToProps = (dispatch, { history }) => ({
+const mapDispatchToProps = (dispatch, { history, location }) => ({
   onSubmit: (e) => {
     e.preventDefault()
     const username = e.target.elements['username'].value
     const password = e.target.elements['password'].value
     dispatch(submitLogin(username, password))
-      .then(() => history.push('/'))
       .catch((err) => console.warn(err))
   },
 })
 
+const RedirectingSignin = ({ isLoggedIn, history, location, ...rest }) => (
+  isLoggedIn ? (
+    <Redirect to={location.state && location.state.from || { pathname: '/' }} />
+  ) : (
+    <AuthenticationForm {...rest} />
+  )
+)
+
 export default withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(AuthenticationForm))
+)(RedirectingSignin))

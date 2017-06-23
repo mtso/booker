@@ -1,10 +1,10 @@
 import React from 'react'
 import store from '../store'
 import { Route } from 'react-router'
-import { Redirect } from 'react-router-dom'
+import { Redirect, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
-const PrivateRoute = ({ isLoggedIn, render, component: Component, ...rest }) => {
+const PrivateRoute = ({ isLoggedIn, render, component: Component, ...rest }) => {  
   if (!!render) {
     // Return Route with "render" rendered
     return (
@@ -39,7 +39,7 @@ const mapStateToProps = ({ username }) => ({
   isLoggedIn: username !== null,
 })
 
-export default connect(
+export default withRouter(connect(
   mapStateToProps,
   null
-)(PrivateRoute)
+)(PrivateRoute))
