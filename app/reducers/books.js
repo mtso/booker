@@ -1,18 +1,25 @@
-import { RECEIVE_BOOKS } from '../actions/types'
+import { RECEIVE_BOOKS, RECEIVE_MYBOOKS } from '../actions/types'
 
 const defaultState = {
-  books: [],
+  all: [],
   mybooks: [],
+  search: [],
 }
 
 const books = (state = defaultState, action) => {
   switch(action.type) {
     case RECEIVE_BOOKS:
-      const newBooks = action.books
-      const newState = Object.assign({}, state, {
-        books: newBooks,
+      const all = action.books
+      return Object.assign({}, state, {
+        all,
       })
-      return newState
+
+    case RECEIVE_MYBOOKS:
+      const mybooks = action.books
+      return Object.assign({}, state, {
+        mybooks,
+      })
+
     default:
       return state
   }
