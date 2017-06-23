@@ -5,30 +5,26 @@ import { NavLink, Link, withRouter } from 'react-router-dom'
 const unAuthenticatedLinks = [
   {
     to: '/signup',
-    activeStyle: {fontWeight: 'bold'},
+    activeClassName: 'active',
     displayText: 'Sign Up',
   },
   {
     to: '/about',
-    activeStyle: {fontWeight: 'bold'},
+    activeClassName: 'active',
     displayText: 'About',    
   },
 ]
 
 const authenticatedLinks = [
-  // {
-  //   to: '/logout',
-  //   displayText: 'Log Out',
-  // }
   {
     to: '/',
-    exact: true,
-    activeStyle: {fontWeight: 'bold'},
+    isActive: (_, { pathname }) => pathname === '/' || pathname === '/mybooks',
+    activeClassName: 'active',
     displayText: 'Books',
   },
   {
     to: '/account',
-    activeStyle: {fontWeight: 'bold'},
+    activeClassName: 'active',
     displayText: 'Account',
   },
 ]
@@ -36,7 +32,7 @@ const authenticatedLinks = [
 const Nav = ({ isLoggedIn, onLogout }) => (
   <nav>
     <Link to='/'>
-      <h1 className='typemark'>Booker</h1>
+      <img className='logo' src='/img/book-logo.svg' />
     </Link>
     {
       isLoggedIn
@@ -52,10 +48,5 @@ const Nav = ({ isLoggedIn, onLogout }) => (
     }
   </nav>
 )
-//    <NavLink to='/about' activeStyle={{fontWeight: 'bold'}}>About</NavLink>
-//    <NavLink to='/signin' activeStyle={{fontWeight: 'bold'}}>Sign In</NavLink>
-
-    // <Link to='/new'>Add Book</Link>
-    // {!isLoggedIn && <AuthenticationForm />}
 
 export default Nav

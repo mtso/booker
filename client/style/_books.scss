@@ -1,0 +1,12 @@
+@import 'mixins';
+@import 'animations';
+
+
+.book-table {
+  @include transition(0.22s);
+
+  img {
+    -webkit-animation: fadein 0.22s;
+  }
+}
+
