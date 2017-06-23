@@ -14,16 +14,15 @@ import BookCreatorContainer from './BookCreatorContainer'
 const App = () => (
   <div>
     <NavContainer />
-    <Route exact path='/' component={BookBrowser} />
-    <Route path='/mybooks' component={BookBrowser} />
-    <Route path='/signup' component={SigninForm} />
-    <PrivateRoute path='/test' render={() => (<p>in test route</p>)} />
-    <PrivateRoute path='/account' component={AccountFormContainer} />
-    <PrivateRoute path='/new' component={BookCreatorContainer} />
+    <div className='content'>
+      <Route exact path='/' component={BookBrowser} />
+      <Route path='/mybooks' component={BookBrowser} />
+      <Route path='/signup' component={SigninForm} />
+      <PrivateRoute path='/test' render={() => (<p>in test route</p>)} />
+      <PrivateRoute path='/account' component={AccountFormContainer} />
+      <PrivateRoute path='/new' component={BookCreatorContainer} />
+    </div>
   </div>
 )
-
-//    <Route exact path='/' render={() => <BookTableContainer />} />
-//    <Route path='/new' render={() => (<BookCreator />)} />
 
 export default App

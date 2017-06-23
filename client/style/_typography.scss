@@ -1,0 +1,36 @@
+@import 'variables';
+
+html, body, a, button {
+  font-family: 'Open Sans', Helvetica,  sans-serif;
+}
+
+a {
+  color: $primary-invert;
+  text-decoration: none;
+}
+
+button {
+  margin: 0;
+  padding: 0;
+  cursor: pointer;
+
+  background-color: rgba(0, 0, 0, 0);
+  border: none;
+  color: $primary-invert;
+}
+
+a, button {
+  font-size: $navlink-font-size;
+}
+
+a:hover, button:hover {
+  color: darken($primary-invert, 10%);
+}
+
+.active {
+  color: $primary-color;
+}
+
+.active:hover {
+  color: darken($primary-color, 10%);
+}

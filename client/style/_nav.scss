@@ -1,0 +1,41 @@
+@import 'variables';
+
+$sidebar-width: 300px;
+
+nav {
+  height: 100%;
+  background-color: $secondary-color;
+  position: fixed;
+  min-width: $sidebar-width;
+  width: 25%;
+  top: 0;
+  left: 0;
+
+  a, button {
+    margin-left: 3em;
+    display: block;
+    line-height: 2em;
+  }
+
+  .logo {
+    margin-top: 3em;
+    margin-bottom: 1em;
+  }
+}
+
+.content {
+  padding: 2em 3em;
+  position: absolute;
+  left: 25%;
+}
+
+@media all and (max-width: 1200px) {
+  nav {
+    // width: 300px;
+  }
+
+  .content {
+    // margin-left: 0px;
+    left: $sidebar-width;
+  }
+}

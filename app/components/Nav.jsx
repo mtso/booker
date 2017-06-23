@@ -16,13 +16,9 @@ const unAuthenticatedLinks = [
 ]
 
 const authenticatedLinks = [
-  // {
-  //   to: '/logout',
-  //   displayText: 'Log Out',
-  // }
   {
     to: '/',
-    exact: true,
+    isActive: (_, { pathname }) => pathname === '/' || pathname === '/mybooks',
     activeStyle: {fontWeight: 'bold'},
     displayText: 'Books',
   },
@@ -36,7 +32,7 @@ const authenticatedLinks = [
 const Nav = ({ isLoggedIn, onLogout }) => (
   <nav>
     <Link to='/'>
-      <h1 className='typemark'>Booker</h1>
+      <img className='logo' src='/img/book-logo.svg' />
     </Link>
     {
       isLoggedIn
@@ -52,10 +48,5 @@ const Nav = ({ isLoggedIn, onLogout }) => (
     }
   </nav>
 )
-//    <NavLink to='/about' activeStyle={{fontWeight: 'bold'}}>About</NavLink>
-//    <NavLink to='/signin' activeStyle={{fontWeight: 'bold'}}>Sign In</NavLink>
-
-    // <Link to='/new'>Add Book</Link>
-    // {!isLoggedIn && <AuthenticationForm />}
 
 export default Nav
