@@ -11,10 +11,7 @@ import (
 var indexTemplBytes, _ = ioutil.ReadFile("./server/views/index.template.html")
 var indexTempl = template.Must(template.New("").Parse(string(indexTemplBytes)))
 
-func TEMPGetApp(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/html")
-
-	// need this to be nullable
+func preloadState(r *http.Request) *interface{} {
 	u, _ := GetUsername(r)
 
 	state := struct {
@@ -23,7 +20,17 @@ func TEMPGetApp(w http.ResponseWriter, r *http.Request) {
 		Username: u,
 	}
 
-	js, err := json.Marshal(state)
+	var i interface{}
+	i = state
+	return &i
+}
+
+func TEMPGetApp(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+
+	st := preloadState(r)
+
+	js, err := json.Marshal(st)
 	if WriteErrorResponse(w, err) {
 		return
 	}

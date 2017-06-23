@@ -8,11 +8,13 @@ import SigninForm from './SigninForm'
 
 import { Link } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
+import BookBrowser from './BookBrowser'
 
 const App = () => (
   <div>
     <Link to='/test'>Test</Link>
     <NavContainer />
+    <Route exact path='/' component={BookBrowser} />
     <Route path='/signup' component={SigninForm} />
     <PrivateRoute path='/test' render={() => (<p>in test route</p>)} />
   </div>
