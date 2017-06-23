@@ -4,8 +4,6 @@
 $sidebar-width: 300px;
 
 nav {
-  @include transition(0.22s);
-
   height: 100%;
   background-color: $secondary-color;
   position: fixed;
@@ -18,6 +16,7 @@ nav {
     margin-left: 3em;
     display: block;
     line-height: 2em;
+    font-size: $navlink-font-size;
   }
 
   .logo {
@@ -31,6 +30,17 @@ nav {
   position: absolute;
   left: 25%;
 }
+
+.tab-container {
+  margin-bottom: 1em;
+}
+
+.tab-link {
+  font-size: 1em;
+  margin-right: 1em;
+  font-weight: 600;
+}
+
 
 @media all and (max-width: 1200px) {
   nav {

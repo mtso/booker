@@ -4,12 +4,38 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"strconv"
+
+	"github.com/gorilla/mux"
 
 	"github.com/mtso/booker/server/models"
 	"github.com/mtso/booker/server/utils"
 )
 
 var ErrInvalidBody = errors.New("Required fields: title, isbn, and image_url")
+var ErrNoId = errors.New("Required field: id")
+
+func GetBook(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	idparam, ok := vars["id"]
+	if !ok {
+		WriteErrorResponse(w, ErrNoId)
+		return
+	}
+
+	id, err := strconv.ParseInt(idparam, 10, 64)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	book, err := models.Books.FindById(id)
+	resp := &JsonResponse{
+		"ok":   true,
+		"book": book,
+	}
+
+	WriteJson(w, resp)
+}
 
 func GetBooks(w http.ResponseWriter, r *http.Request) {
 	bks, err := models.Books.GetBooks()

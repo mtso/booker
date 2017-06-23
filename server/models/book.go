@@ -15,7 +15,10 @@ const (
 		image_url text        NOT NULL,
 		user_id   bigint
 	)`
-	SelectBookByIsbn = `SELECT id, title, isbn, image_url, user_id FROM Books
+	SelectBookById = `SELECT books.id, title, isbn, image_url, user_id, username FROM Books, Users
+		WHERE books.id = $1 AND users.id = books.user_id
+		LIMIT 1`
+	SelectBookByIsbn = `SELECT books.id, title, isbn, image_url, user_id FROM Books
 		WHERE isbn = $1
 		LIMIT 1`
 	SelectBooks = `SELECT
@@ -37,7 +40,8 @@ const (
 			, image_url
 			, username
 		FROM Books, Users
-		WHERE users.id = books.user_id AND users.username = $1`
+		WHERE users.id = books.user_id AND users.username = $1
+		ORDER BY books.id DESC`
 	SelectBooksByUserId = `SELECT id, title, isbn, image_url, user_id FROM Books
 		WHERE user_id = $1 ORDER DESC LIMIT 10`
 	InsertBook     = `INSERT INTO Books (title, isbn, image_url, user_id) VALUES ($1, $2, $3, $4)`
@@ -54,7 +58,7 @@ type BookSchema struct {
 	db *sql.DB
 }
 
-// User model.
+// Book model.
 type Book struct {
 	Id       int64  `json:"id"`
 	Title    string `json:"title"`
@@ -75,7 +79,7 @@ func ConnectBooks(conn *sql.DB) (err error) {
 // [1] count
 func (s BookSchema) GetBooks(page ...int) ([]Book, error) {
 	offset := 0
-	count := 10
+	count := 1000
 
 	if len(page) > 0 {
 		offset = page[0]
@@ -120,6 +124,16 @@ func (s BookSchema) GetMyBooks(username string) ([]Book, error) {
 	return bks, nil
 }
 
+func (s BookSchema) FindById(id int64) (book Book, err error) {
+	rows, err := s.db.Query(SelectBookById, id)
+	if err != nil {
+		return
+	}
+
+	err = scanFullBook(rows, &book)
+	return
+}
+
 func (s BookSchema) Find(isbn string) (book Book, err error) {
 	rows, err := s.db.Query(SelectBookByIsbn, isbn)
 	if err != nil {
@@ -137,6 +151,15 @@ func (b *Book) UpdateUser(userId int64) (err error) {
 
 func (b *Book) Create() (err error) {
 	_, err = Users.db.Exec(InsertBook, b.Title, b.Isbn, b.ImageUrl, b.UserId)
+	return
+}
+
+func scanFullBook(r *sql.Rows, b *Book) (err error) {
+	if r.Next() {
+		err = r.Scan(&b.Id, &b.Title, &b.Isbn, &b.ImageUrl, &b.UserId, &b.Username)
+	} else {
+		err = ErrNotFoundUser
+	}
 	return
 }
 
