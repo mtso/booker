@@ -1,4 +1,4 @@
-import { RECEIVE_BOOKS, RECEIVE_MYBOOKS } from '../actions/types'
+import { RECEIVE_BOOKS, RECEIVE_MYBOOKS, RECEIVE_BOOKSEARCH } from '../actions/types'
 
 const defaultState = {
   all: [],
@@ -18,6 +18,12 @@ const books = (state = defaultState, action) => {
       const mybooks = action.books
       return Object.assign({}, state, {
         mybooks,
+      })
+
+    case RECEIVE_BOOKSEARCH:
+      const { search } = action
+      return Object.assign({}, state, {
+        search,
       })
 
     default:

@@ -1,4 +1,5 @@
 @import 'variables';
+@import 'mixins';
 
 html, body, a, button {
   font-family: 'Open Sans', Helvetica,  sans-serif;
@@ -20,6 +21,8 @@ button {
 }
 
 a, button {
+  @include transition(0.17s);
+
   font-size: $navlink-font-size;
 }
 
@@ -40,7 +43,7 @@ a:hover, button:hover {
 }
 
 .tablink {
-  font-size: 0.8em;
+  font-size: 1em;
   margin-right: 1em;
   font-weight: 600;
 }

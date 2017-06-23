@@ -1,5 +1,4 @@
 import * as T from './types'
-import handleError from '../utils/handleError'
 import request from 'superagent'
 
 export const submitLogin = (username, password) => (dispatch) => request
@@ -27,15 +26,6 @@ export const submitLogout = () => (dispatch) => request
       throw new Error("unable to logout")
     }
   })
-
-// export const submitLogout = () => (dispatch) => request
-//   .post('/auth/logout')
-//   .then((data) => {
-//     data = JSON.parse(data)
-//     if (data.ok) {
-      
-//     }
-//   })
 
 export const login = (username) => ({
   type: T.LOGIN,
