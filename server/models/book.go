@@ -15,12 +15,11 @@ const (
 		image_url text        NOT NULL,
 		user_id   bigint
 	)`
+
 	SelectBookById = `SELECT books.id, title, isbn, image_url, user_id, username FROM Books, Users
 		WHERE books.id = $1 AND users.id = books.user_id
 		LIMIT 1`
-	SelectBookByIsbn = `SELECT books.id, title, isbn, image_url, user_id FROM Books
-		WHERE isbn = $1
-		LIMIT 1`
+
 	SelectBooks = `SELECT
 		DISTINCT ON (books.id) 
 			books.id
@@ -32,6 +31,7 @@ const (
 		WHERE users.id = books.user_id
 		ORDER BY books.id DESC
 		OFFSET $1 LIMIT $2`
+
 	SelectMyBooks = `SELECT
 		DISTINCT ON (books.id) 
 			books.id
@@ -42,10 +42,15 @@ const (
 		FROM Books, Users
 		WHERE users.id = books.user_id AND users.username = $1
 		ORDER BY books.id DESC`
+
 	SelectBooksByUserId = `SELECT id, title, isbn, image_url, user_id FROM Books
 		WHERE user_id = $1 ORDER DESC LIMIT 10`
-	InsertBook     = `INSERT INTO Books (title, isbn, image_url, user_id) VALUES ($1, $2, $3, $4)`
-	UpdateBookUser = `UPDATE Books SET user_id = $2 WHERE id = $1`
+
+	InsertBook = `INSERT INTO Books (title, isbn, image_url, user_id) VALUES ($1, $2, $3, $4)`
+
+	UpdateBookUser = `UPDATE Books
+		SET user_id = $2
+		WHERE id = $1`
 )
 
 // Singleton handle to UserSchema.
@@ -66,6 +71,22 @@ type Book struct {
 	ImageUrl string `json:"image_url"`
 	UserId   int64  `json:"user_id,omitempty"`
 	Username string `json:"username"`
+}
+
+type BookResponse struct {
+	Id       int64  `json:"id"`
+	Title    string `json:"title"`
+	Isbn     string `json:"isbn"`
+	ImageUrl string `json:"image_url"`
+
+	Status string `json:"status"`
+
+	User struct {
+		Id int64 `json:"id"`
+		Username string `json:"username"`
+		City string `json:"city"`
+		State string `json:"state"`
+	}
 }
 
 // Initializer that stores a reference to the db connection.
@@ -131,16 +152,6 @@ func (s BookSchema) FindById(id int64) (book Book, err error) {
 	}
 
 	err = scanFullBook(rows, &book)
-	return
-}
-
-func (s BookSchema) Find(isbn string) (book Book, err error) {
-	rows, err := s.db.Query(SelectBookByIsbn, isbn)
-	if err != nil {
-		return
-	}
-
-	err = scanBook(rows, &book)
 	return
 }
 

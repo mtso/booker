@@ -11,21 +11,17 @@ export const postTrade = (book_id) => (dispatch) => request
     }
   })
 
-// export const getIncoming = () => console.log('hello~')
+export const acceptTrade = (id) => (dispatch) => request
+  .put('/api/trade/'+id)
+  .then(({ body }) => body)
+  .then(({ ok, message }) => {
+    if (ok) {
+      dispatch(getIncoming())
+    } else {
+      throw new Error(message)
+    }
+  })
 
-// export const getIncoming = (m) => {
-//   console.log(m)
-//   return (dispatch) => request
-//   .get('/api/trades/incoming')
-//   .then(({ body }) => body)
-//   .then(({ ok, trades, message }) => {
-//     if (ok) {
-//       dispatch(receiveIncoming(trades))
-//     } else {
-//       throw new Error(message)
-//     }
-//   })
-// }
 export const getIncoming = () => (dispatch) => request
   .get('/api/trades/incoming')
   .then(({ body }) => body)
