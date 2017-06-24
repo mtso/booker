@@ -88,12 +88,6 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	resp["ok"] = true
 	resp["username"] = user.Username
 
-	// if city, err := user.City.Value(); err != nil {
-	// 	resp["city"] = city
-	// }
-	// if state, err := user.State.Value(); err != nil {
-	// 	resp["state"] = state
-	// }
 	city, _ := user.City.Value()
 	state, _ := user.State.Value()
 	resp["city"] = city

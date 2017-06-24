@@ -2,6 +2,7 @@ import React from 'react'
 import BookTable from '../components/BookTable'
 import { connect } from 'react-redux'
 import { getBooks, getMyBooks } from '../actions/books'
+import { postTrade } from '../actions'
 import { Link, NavLink, Route, withRouter } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 
@@ -17,10 +18,12 @@ const mapDispatchToProps = (dispatch, { match, isLoggedIn }) => ({
   componentDidMount: dispatch(match.path === '/'
       ? getBooks()
       : getMyBooks())
-    .catch(console.warn)
+    .catch(console.warn),
+  onTrade: (bookid) => () => dispatch(postTrade(bookid))
+    .catch(console.warn),
 })
 
-const BookBrowser = ({ isLoggedIn, username, books, match }) => (
+const BookBrowser = ({ isLoggedIn, username, books, match, onTrade }) => (
   <div>
     <div className='tab-container'>
       <NavLink
@@ -45,7 +48,11 @@ const BookBrowser = ({ isLoggedIn, username, books, match }) => (
         books={books.all}
         controls={(book) => {
           if (book.username !== username) {
-            return (<button>Request Trade</button>)
+            return (
+              <button onClick={
+                onTrade(book.id)
+              }>Request Trade</button>
+            )
           }
         }}
       />

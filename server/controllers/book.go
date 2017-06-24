@@ -30,7 +30,7 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 
 	book, err := models.Books.FindById(id)
 	resp := &JsonResponse{
-		"ok": true,
+		"ok":   true,
 		"book": book,
 	}
 

@@ -46,7 +46,7 @@ func makeRootHandler() *mux.Router {
 
 	api.HandleFunc("/trades/incoming", IsLoggedInMiddleware(GetIncomingTrades)).Methods("GET")
 	api.HandleFunc("/trades/outgoing", IsLoggedInMiddleware(GetOutgoingTrades)).Methods("GET")
-	// api.HandleFunc("/trade", IsLoggedInMiddleware(PostTrade)).Methods("POST")
+	api.HandleFunc("/trade", IsLoggedInMiddleware(PostTrade)).Methods("POST")
 	// api.HandleFunc("/trade/{id}", ).Methods("PUT")
 	// api.HandleFunc("/trade/{id}", ).Methods("POST")
 	// api.HandleFunc("/trade/{id}", ).Methods("GET")

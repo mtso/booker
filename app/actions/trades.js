@@ -1,6 +1,16 @@
 import * as T from './types'
 import request from 'superagent'
 
+export const postTrade = (book_id) => (dispatch) => request
+  .post('/api/trade')
+  .send({ book_id })
+  .then(({ body }) => body)
+  .then(({ ok, message }) => {
+    if (!ok) {
+      throw new Error(message)
+    }
+  })
+
 // export const getIncoming = () => console.log('hello~')
 
 // export const getIncoming = (m) => {

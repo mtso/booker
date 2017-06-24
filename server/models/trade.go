@@ -1,7 +1,6 @@
 package models
 
 import (
-	"log"
 	"database/sql"
 	"errors"
 
@@ -13,8 +12,8 @@ const (
 	// StatusAccepted
 	// StatusCanceled
 	StatusRequested = "StatusRequested"
-	StatusAccepted = "StatusAccepted"
-	StatusCanceled = "StatusCanceled"
+	StatusAccepted  = "StatusAccepted"
+	StatusCanceled  = "StatusCanceled"
 )
 
 const (
@@ -51,16 +50,6 @@ const (
 		AND trades.user_id = users.id
 		ORDER BY trades.id DESC`
 
-	// GetIncomingTest = `SELECT DISTINCT ON(trades.id)
-	// 		trades.id,
-	// 		trades.user_id
-	// 	FROM Trades, Users, Books
-	// 	WHERE books.user_id = $1
-	// 	AND trades.book_id = books.id
-	// 	AND trades.status = 'StatusRequested'
-	// 	AND trades.user_id = users.id
-	// 	ORDER BY trades.id DESC`
-
 	GetOutgoing = `SELECT DISTINCT ON(trades.id)
 			trades.id,
 			trades.book_id,
@@ -75,6 +64,7 @@ const (
 		WHERE trades.user_id = $1
 		AND trades.status = 'StatusRequested'
 		AND users.id = books.user_id
+		AND books.id = trades.book_id
 		ORDER BY trades.id DESC`
 
 	GetTrade = `SELECT DISTINCT ON(trades.id) trades.id, books.title FROM Trades, Users, Books WHERE trades.user_id = $1 OR books.user_id = $1`
@@ -97,9 +87,9 @@ type TradeSchema struct {
 
 // Trade model.
 type Trade struct {
-	Id     int64 `json:"id"`
-	UserId int64 `json:"user_id"`
-	BookId int64 `json:"book_id"`
+	Id     int64  `json:"id"`
+	UserId int64  `json:"user_id"`
+	BookId int64  `json:"book_id"`
 	Status string `json:"status"`
 }
 
@@ -110,22 +100,22 @@ func ConnectTrades(conn *sql.DB) (err error) {
 	return
 }
 
-// type 
+// type
 
-type TradeResponse struct{
-	Id int64 `json:"id"`
-	BookId int64 `json:"book_id"`
-	UserId int64 `json:"user_id"`
+type TradeResponse struct {
+	Id     int64  `json:"id"`
+	BookId int64  `json:"book_id"`
+	UserId int64  `json:"user_id"`
 	Status string `json:"status"`
 
 	User struct {
 		Username string `json:"username"`
-		City string `json:"city"`
-		State string `json:"state"`
+		City     string `json:"city"`
+		State    string `json:"state"`
 	} `json:"user"`
 
 	Book struct {
-		Title string `json:"title"`
+		Title    string `json:"title"`
 		ImageUrl string `json:"image_url"`
 	} `json:"book"`
 }
@@ -139,10 +129,9 @@ func (s TradeSchema) GetIncomingTrades(userid int64) ([]TradeResponse, error) {
 	trades := make([]TradeResponse, 0)
 
 	var tr TradeResponse
-	for scanIncomingTrade(rows, &tr) == nil {
+	for scanTradeResponse(rows, &tr) == nil {
 		trades = append(trades, tr)
 	}
-	log.Printf("")
 
 	return trades, nil
 }
@@ -156,15 +145,14 @@ func (s TradeSchema) GetOutgoingTrades(userid int64) ([]TradeResponse, error) {
 	trades := make([]TradeResponse, 0)
 
 	var tr TradeResponse
-	for scanIncomingTrade(rows, &tr) == nil {
+	for scanTradeResponse(rows, &tr) == nil {
 		trades = append(trades, tr)
 	}
-	// log.Println(trades)
 
 	return trades, nil
 }
 
-func scanIncomingTrade(r *sql.Rows, t *TradeResponse) error {
+func scanTradeResponse(r *sql.Rows, t *TradeResponse) error {
 	if r.Next() {
 		var city sql.NullString
 		var state sql.NullString
@@ -185,52 +173,7 @@ func scanIncomingTrade(r *sql.Rows, t *TradeResponse) error {
 	return ErrNotFoundTrade
 }
 
-// // [0] offset
-// // [1] count
-// func (s TradeSchema) GetTrades(page ...int) ([]Trade, error) {
-// 	offset := 0
-// 	count := 10
-
-// 	if len(page) > 0 {
-// 		offset = page[0]
-// 	}
-// 	if len(page) > 1 {
-// 		count = page[1]
-// 	}
-
-// 	_, err := s.db.Query(SelectTrades, offset, count)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-// 	return nil, err
-// }
-
-// func (s TradeSchema) Find(isbn string) (book Trade, err error) {
-// 	rows, err := s.db.Query(SelectTradeByIsbn, isbn)
-// 	if err != nil {
-// 		return
-// 	}
-
-// 	err = scanTrade(rows, &user)
-// 	return
-// }
-
-// func (t *Trade) UpdateTrade(userId int64) (err error) {
-// 	_, err = Trades.Exec(UpdateTradeUser, b.Id, userId)
-// 	return
-// }
-
-// func (t *Trade) Create() (err error) {
-// 	_, err = Users.db.Exec(InsertTrade /* TODO: implement*/)
-// 	return
-// }
-
-// // SQL scanner helper
-// func scanTrade(r *sql.Rows, u *User) (err error) {
-// 	if r.Next() {
-// 		err = r.Scan( /* TODO: implement*/ )
-// 	} else {
-// 		err = ErrNotFoundUser
-// 	}
-// 	return
-// }
+func (s TradeSchema) Create(userid, bookid int64) (err error) {
+	_, err = s.db.Exec(InsertTrade, userid, bookid)
+	return
+}
