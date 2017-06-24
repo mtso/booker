@@ -68,7 +68,8 @@ const (
 
 	GetTrade = `SELECT DISTINCT ON(trades.id) trades.id, books.title FROM Trades, Users, Books WHERE trades.user_id = $1 OR books.user_id = $1`
 
-	InsertTrade = `INSERT INTO Trades (user_id, book_id) VALUES ($1, $2)`
+	InsertTrade = `INSERT INTO Trades (user_id, book_id) SELECT $1, $2
+		WHERE NOT EXISTS (SELECT * FROM Trades WHERE user_id = $1 AND book_id = $2)`
 
 	// find trade by tradeid
 	// validate that trades.book_id's book.user_id is userid
@@ -111,8 +112,6 @@ func ConnectTrades(conn *sql.DB) (err error) {
 	_, err = conn.Exec(CreateTableTrades)
 	return
 }
-
-// type
 
 type TradeResponse struct {
 	Id     int64  `json:"id"`

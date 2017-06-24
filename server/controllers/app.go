@@ -11,6 +11,8 @@ import (
 var indexTemplBytes, _ = ioutil.ReadFile("./server/views/index.template.html")
 var indexTempl = template.Must(template.New("").Parse(string(indexTemplBytes)))
 
+var ServeStatic = http.StripPrefix("/static/", http.FileServer(http.Dir("./dist/")))
+
 func preloadState(r *http.Request) *interface{} {
 	u, _ := GetUsername(r)
 
@@ -48,5 +50,3 @@ func TEMPGetApp(w http.ResponseWriter, r *http.Request) {
 		WriteErrorResponse(w, err)
 	}
 }
-
-var ServeStatic = http.StripPrefix("/", http.FileServer(http.Dir("./dist/")))

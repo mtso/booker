@@ -73,6 +73,22 @@ type Book struct {
 	Username string `json:"username"`
 }
 
+type BookResponse struct {
+	Id       int64  `json:"id"`
+	Title    string `json:"title"`
+	Isbn     string `json:"isbn"`
+	ImageUrl string `json:"image_url"`
+
+	Status string `json:"status"`
+
+	User struct {
+		Id int64 `json:"id"`
+		Username string `json:"username"`
+		City string `json:"city"`
+		State string `json:"state"`
+	}
+}
+
 // Initializer that stores a reference to the db connection.
 func ConnectBooks(conn *sql.DB) (err error) {
 	Books.db = conn
