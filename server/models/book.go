@@ -82,10 +82,10 @@ type BookResponse struct {
 	Status string `json:"status"`
 
 	User struct {
-		Id int64 `json:"id"`
+		Id       int64  `json:"id"`
 		Username string `json:"username"`
-		City string `json:"city"`
-		State string `json:"state"`
+		City     string `json:"city"`
+		State    string `json:"state"`
 	}
 }
 

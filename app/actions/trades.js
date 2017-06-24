@@ -22,6 +22,18 @@ export const acceptTrade = (id) => (dispatch) => request
     }
   })
 
+export const cancelTrade = (id) => (dispatch) => request
+  .del('/api/trade/'+id)
+  .set('Accept', 'application/json')
+  .then((resp) => (console.log(resp), resp.body))
+  .then(({ ok, message }) => {
+    if (ok) {
+      dispatch(getOutgoing())
+    } else {
+      throw new Error(message)
+    }
+  })
+
 export const getIncoming = () => (dispatch) => request
   .get('/api/trades/incoming')
   .then(({ body }) => body)

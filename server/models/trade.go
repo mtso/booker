@@ -69,7 +69,12 @@ const (
 	GetTrade = `SELECT DISTINCT ON(trades.id) trades.id, books.title FROM Trades, Users, Books WHERE trades.user_id = $1 OR books.user_id = $1`
 
 	InsertTrade = `INSERT INTO Trades (user_id, book_id) SELECT $1, $2
-		WHERE NOT EXISTS (SELECT * FROM Trades WHERE user_id = $1 AND book_id = $2)`
+		WHERE NOT EXISTS (
+			SELECT * FROM Trades
+			WHERE user_id = $1
+			AND book_id = $2
+			AND status = status 'StatusRequested'
+		)`
 
 	// find trade by tradeid
 	// validate that trades.book_id's book.user_id is userid
@@ -81,6 +86,10 @@ const (
 			ELSE status 'StatusCanceled'
 		END
 		WHERE book_id = $2`
+
+	CancelTradeExec = `UPDATE Trades
+		SET status = 'StatusCanceled'
+		WHERE id = $1 AND user_id = $2`
 
 	SelectById = `SELECT id, book_id, user_id, status
 		FROM Trades
@@ -217,4 +226,13 @@ func (t *Trade) AcceptTrade() error {
 		return err
 	}
 	return nil
+}
+
+func (s TradeSchema) CancelTrade(id string, userid int64) (int64, error) {
+	res, err := s.db.Exec(CancelTradeExec, id, userid)
+	if err != nil {
+		return 0, err
+	}
+
+	return res.RowsAffected()
 }

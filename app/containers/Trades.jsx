@@ -2,21 +2,23 @@ import React from 'react'
 import TradeTable from '../components/TradeTable'
 import { connect } from 'react-redux'
 import { NavLink, Redirect, Route, withRouter } from 'react-router-dom'
-import { getIncoming, getOutgoing, acceptTrade } from '../actions'
+import { getIncoming, getOutgoing, acceptTrade, cancelTrade } from '../actions'
 
 const mapStateToProps = ({ trades }) => ({ trades })
 
 const mapDispatchToProps = (dispatch, { match }) => ({
-  onAccept: (id) => () => dispatch(acceptTrade(id))
-    .catch(console.warn),
   componentDidMount: dispatch(
     (match.url === '/trades/incoming')
       ? getIncoming()
       : getOutgoing()
   ).catch(console.warn),
+  onAccept: (id) => () => dispatch(acceptTrade(id))
+    .catch(console.warn),
+  onCancel: (id) => () => dispatch(cancelTrade(id))
+    .catch(console.warn),
 })
 
-const Trades = ({ trades, match, onAccept }) => (
+const Trades = ({ trades, match, onAccept, onCancel }) => (
   <div>
     <div className='tab-container'>
       <NavLink
@@ -37,13 +39,21 @@ const Trades = ({ trades, match, onAccept }) => (
           // TODO: there may be an opportunity to try using one
           // Route with match.params.type or match.url, etc.
           trades.incoming
-        } controls={
+        }
+        controls={
           ({ id }) => (<button onClick={onAccept(id)}>Accept Trade</button>)
-        } cell={'temp'}
+        }
+        cell={'temp'}
       />
     )} />
     <Route path={'/trades/outgoing'} component={() => (
-      <TradeTable trades={trades.outgoing} cell={'temp'} />
+      <TradeTable
+        trades={trades.outgoing}
+        controls={
+          ({ id }) => (<button onClick={onCancel(id)}>Cancel Trade</button>)
+        }
+        cell={'temp'}
+      />
     )} />
   </div>
 )

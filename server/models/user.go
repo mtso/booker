@@ -44,7 +44,7 @@ type UserSchema struct {
 type User struct {
 	Id           int64          `sql:"id"`
 	Username     string         `sql:"username"`
-	DisplayName  string `sql:"display_name"`
+	DisplayName  string         `sql:"display_name"`
 	PasswordHash []byte         `sql:"password_hash"`
 	City         sql.NullString `sql:"city"`
 	State        sql.NullString `sql:"state"`

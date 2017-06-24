@@ -27,7 +27,7 @@ func preloadState(r *http.Request) *interface{} {
 	return &i
 }
 
-func TEMPGetApp(w http.ResponseWriter, r *http.Request) {
+func ServeApp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 
 	st := preloadState(r)
@@ -41,7 +41,6 @@ func TEMPGetApp(w http.ResponseWriter, r *http.Request) {
 		State template.JS
 	}{
 		template.JS(string(js)),
-		// template.JS("{}"),
 	}
 
 	err = indexTempl.Execute(w, data)

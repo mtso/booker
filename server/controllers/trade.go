@@ -144,3 +144,34 @@ func PutTrade(w http.ResponseWriter, r *http.Request) {
 
 	WriteJson(w, resp)
 }
+
+func CancelTrade(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	tradeid, ok := vars["id"]
+	if !ok {
+		WriteErrorResponse(w, ErrMissingFieldTrade)
+		return
+	}
+
+	username, err := GetUsername(r)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	user, err := models.Users.Find(*username)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	count, err := models.Trades.CancelTrade(tradeid, user.Id)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	resp := &JsonResponse{
+		"ok":      count == 1,
+		"message": fmt.Sprintf("Rows affected %d", count),
+	}
+
+	WriteJson(w, resp)
+}
