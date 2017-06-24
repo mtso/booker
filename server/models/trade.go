@@ -76,10 +76,10 @@ const (
 	// update books
 	UpdateTrade = `UPDATE Trades
 		SET status = CASE
-			WHEN user_id = $2 THEN status 'StatusAccepted'
+			WHEN id = $1 THEN status 'StatusAccepted'
 			ELSE status 'StatusCanceled'
 		END
-		WHERE book_id = $1`
+		WHERE book_id = $2`
 
 	SelectById = `SELECT id, book_id, user_id, status
 		FROM Trades
@@ -211,7 +211,7 @@ func scanTrade(r *sql.Rows, t *Trade) (err error) {
 }
 
 func (t *Trade) AcceptTrade() error {
-	if _, err := Trades.db.Exec(UpdateTrade, t.Id, t.UserId); err != nil {
+	if _, err := Trades.db.Exec(UpdateTrade, t.Id, t.BookId); err != nil {
 		return err
 	}
 	if _, err := Books.db.Exec(UpdateBookUser, t.BookId, t.UserId); err != nil {
