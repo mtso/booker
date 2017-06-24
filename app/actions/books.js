@@ -36,6 +36,15 @@ export const getMyBooks = () => (dispatch) => request
     }
   })
 
+const getFirst = (arr, cb) => {
+  for (let i = 0; i < arr.length; i++) {
+    if (cb(arr[i], i, arr)) {
+      return arr[i]
+    }
+  }
+  return null
+}
+
 // https://www.googleapis.com/books/v1/volumes?q=search+terms
 export const searchBooks = (q) => (dispatch) => request
   .get('https://www.googleapis.com/books/v1/volumes')
@@ -51,7 +60,8 @@ export const searchBooks = (q) => (dispatch) => request
       //   }
       //   return isbn
       // }, '')
-      const id = industryIdentifiers.filter(({ type }) => type === 'ISBN_13')[0]
+      const id = getFirst(industryIdentifiers, ({ type }) => type === 'ISBN_13')
+      // industryIdentifiers.filter(({ type }) => type === 'ISBN_13')[0]
       const { identifier } = id 
       const { thumbnail } = imageLinks
 

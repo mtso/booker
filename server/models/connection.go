@@ -15,6 +15,7 @@ func Connect(conn string) (db *sql.DB, err error) {
 	connects := []func(*sql.DB) error{
 		ConnectUsers,
 		ConnectBooks,
+		ConnectTrades,
 	}
 
 	for _, connect := range connects {

@@ -3,12 +3,12 @@ import BookCell from './BookCell'
 
 const BookTable = ({ books, className, controls }) => (
   <div className={className || 'book-table'}>
-    {books.map((book, i, j, k) => (
+    {books.map((book, i, books) => (
       <BookCell
         key={i}
         {...book}
       >
-        {controls && controls(book, i, j, k)}
+        {controls && controls(book, i, books)}
       </BookCell>
     ))}
   </div>

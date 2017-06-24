@@ -24,14 +24,14 @@ const BookBrowser = ({ isLoggedIn, username, books, match }) => (
   <div>
     <div className='tab-container'>
       <NavLink
-        className='tablink'
+        className='tab-link'
         activeClassName='active'
         exact
         to='/'
       >All Books</NavLink>
       {isLoggedIn &&
         <NavLink
-          className='tablink'
+          className='tab-link'
           activeClassName='active'
           to='/mybooks'
         >My Books</NavLink>}

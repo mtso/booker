@@ -58,7 +58,7 @@ type BookSchema struct {
 	db *sql.DB
 }
 
-// User model.
+// Book model.
 type Book struct {
 	Id       int64  `json:"id"`
 	Title    string `json:"title"`
@@ -66,6 +66,18 @@ type Book struct {
 	ImageUrl string `json:"image_url"`
 	UserId   int64  `json:"user_id,omitempty"`
 	Username string `json:"username"`
+}
+
+type BookTest struct {
+	Id       int64  `json:"id"`
+	Title    string `json:"title"`
+	Isbn     string `json:"isbn"`
+	ImageUrl string `json:"image_url"`
+	UserId   int64  `json:"user_id,omitempty"`
+	User struct {
+		Name string `json:"username"`
+	} `json:"user"`
+	// Username string `json:"username"`
 }
 
 // Initializer that stores a reference to the db connection.
