@@ -48,13 +48,11 @@ func makeRootHandler() *mux.Router {
 	api.HandleFunc("/trades/outgoing", IsLoggedInMiddleware(GetOutgoingTrades)).Methods("GET")
 	api.HandleFunc("/trade", IsLoggedInMiddleware(PostTrade)).Methods("POST")
 	api.HandleFunc("/trade/{id:[0-9]+}", IsLoggedInMiddleware(PutTrade)).Methods("PUT")
-	// api.HandleFunc("/trade/{id:[0-9]+}", IsLoggedInMiddleware(DeleteTrade)).Methods("DELETE")
+	api.HandleFunc("/trade/{id}", IsLoggedInMiddleware(CancelTrade)).Methods("DELETE")
 
 	// Serve app
-	// router.PathPrefix("/").MatcherFunc(exactroot).HandlerFunc(TEMPGetApp)
-	// router.PathPrefix("/").Handler(ServeStatic)
 	router.PathPrefix("/static/").Handler(ServeStatic)
-	router.PathPrefix("/").MatcherFunc(catchall).HandlerFunc(TEMPGetApp)
+	router.PathPrefix("/").MatcherFunc(catchall).HandlerFunc(ServeApp)
 
 	return router
 }

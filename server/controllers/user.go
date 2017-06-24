@@ -87,6 +87,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	resp := make(JsonResponse)
 	resp["ok"] = true
 	resp["username"] = user.Username
+	resp["display_name"] = user.DisplayName
 
 	city, _ := user.City.Value()
 	state, _ := user.State.Value()

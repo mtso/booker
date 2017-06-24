@@ -11,6 +11,8 @@ import (
 	"github.com/mtso/booker/server/utils"
 )
 
+const StatusNotTraded = "StatusNotTraded"
+
 var ErrMissingFieldBook = errors.New("Missing field: book_id")
 var ErrMissingFieldTrade = errors.New("Missing field: book_id")
 
@@ -140,6 +142,37 @@ func PutTrade(w http.ResponseWriter, r *http.Request) {
 	resp := &JsonResponse{
 		"ok":      "true",
 		"message": fmt.Sprintf("Accepted trade %d", trade.Id),
+	}
+
+	WriteJson(w, resp)
+}
+
+func CancelTrade(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	tradeid, ok := vars["id"]
+	if !ok {
+		WriteErrorResponse(w, ErrMissingFieldTrade)
+		return
+	}
+
+	username, err := GetUsername(r)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	user, err := models.Users.Find(*username)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	count, err := models.Trades.CancelTrade(tradeid, user.Id)
+	if WriteErrorResponse(w, err) {
+		return
+	}
+
+	resp := &JsonResponse{
+		"ok":      count == 1,
+		"message": fmt.Sprintf("Rows affected %d", count),
 	}
 
 	WriteJson(w, resp)

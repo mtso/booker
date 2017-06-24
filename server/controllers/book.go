@@ -28,12 +28,30 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	book, err := models.Books.FindById(id)
+	book, err := models.Books.GetBookResponse(id)
+
+	// If Logged in, get trade status
+	username, err := GetUsername(r)
+	if err == nil {
+		user, err := models.Users.Find(*username)
+		if WriteErrorResponse(w, err) {
+			return
+		}
+
+		trade, err := models.Trades.FindByUser(user.Id, book.Id)
+		if err != nil {
+			book.Status = StatusNotTraded
+		} else if trade.Status == "" {
+			book.Status = StatusNotTraded
+		} else {
+			book.Status = trade.Status
+		}
+	}
+
 	resp := &JsonResponse{
 		"ok":   true,
 		"book": book,
 	}
-
 	WriteJson(w, resp)
 }
 

@@ -5,7 +5,13 @@ import Modal from './Modal'
 
 const BookCreator = ({ books, onSearch, onAddBook, history }) => (
   <Modal>
-    <h3>Add a Book <button onClick={() => history.goBack()}>Cancel</button></h3>
+    <h3>Add a Book <button onClick={() => {
+      if (history.length < 3) {
+        history.push('/')
+      } else {
+        history.goBack()
+      }
+    }}>Close</button></h3>
     <Searchbox onSearch={onSearch} />
     <BookTable
       books={books}

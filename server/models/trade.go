@@ -8,9 +8,6 @@ import (
 )
 
 const (
-	// StatusRequested = iota
-	// StatusAccepted
-	// StatusCanceled
 	StatusRequested = "StatusRequested"
 	StatusAccepted  = "StatusAccepted"
 	StatusCanceled  = "StatusCanceled"
@@ -69,7 +66,12 @@ const (
 	GetTrade = `SELECT DISTINCT ON(trades.id) trades.id, books.title FROM Trades, Users, Books WHERE trades.user_id = $1 OR books.user_id = $1`
 
 	InsertTrade = `INSERT INTO Trades (user_id, book_id) SELECT $1, $2
-		WHERE NOT EXISTS (SELECT * FROM Trades WHERE user_id = $1 AND book_id = $2)`
+		WHERE NOT EXISTS (
+			SELECT * FROM Trades
+			WHERE user_id = $1
+			AND book_id = $2
+			AND status = status 'StatusRequested'
+		)`
 
 	// find trade by tradeid
 	// validate that trades.book_id's book.user_id is userid
@@ -82,9 +84,20 @@ const (
 		END
 		WHERE book_id = $2`
 
+	CancelTradeExec = `UPDATE Trades
+		SET status = 'StatusCanceled'
+		WHERE id = $1 AND user_id = $2`
+
 	SelectById = `SELECT id, book_id, user_id, status
 		FROM Trades
 		WHERE id = $1
+		LIMIT 1`
+
+	SelectByUser = `SELECT id, book_id, user_id, status
+		FROM Trades
+		WHERE user_id = $1
+			AND book_id = $2
+		ORDER BY id DESC
 		LIMIT 1`
 )
 
@@ -200,6 +213,15 @@ func (s TradeSchema) FindById(id string) (t Trade, err error) {
 	return
 }
 
+func (s TradeSchema) FindByUser(id int64, bookid int64) (t Trade, err error) {
+	rows, err := s.db.Query(SelectByUser, id, bookid)
+	if err != nil {
+		return
+	}
+	err = scanTrade(rows, &t)
+	return
+}
+
 func scanTrade(r *sql.Rows, t *Trade) (err error) {
 	if r.Next() {
 		err = r.Scan(&t.Id, &t.BookId, &t.UserId, &t.Status)
@@ -218,3 +240,13 @@ func (t *Trade) AcceptTrade() error {
 	}
 	return nil
 }
+
+func (s TradeSchema) CancelTrade(id string, userid int64) (int64, error) {
+	res, err := s.db.Exec(CancelTradeExec, id, userid)
+	if err != nil {
+		return 0, err
+	}
+
+	return res.RowsAffected()
+}
+

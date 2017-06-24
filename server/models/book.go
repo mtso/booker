@@ -16,7 +16,7 @@ const (
 		user_id   bigint
 	)`
 
-	SelectBookById = `SELECT books.id, title, isbn, image_url, user_id, username FROM Books, Users
+	SelectBookById = `SELECT books.id, title, isbn, image_url, user_id, users.display_name FROM Books, Users
 		WHERE books.id = $1 AND users.id = books.user_id
 		LIMIT 1`
 
@@ -42,6 +42,21 @@ const (
 		FROM Books, Users
 		WHERE users.id = books.user_id AND users.username = $1
 		ORDER BY books.id DESC`
+
+	SelectBookResponse = `SELECT
+		DISTINCT ON (books.id)
+			books.id
+			, books.title
+			, books.isbn
+			, books.image_url
+			, books.user_id
+			, users.display_name
+			, users.city
+			, users.state
+		FROM Books, Users
+		WHERE books.id = $1 
+			AND users.id = books.user_id
+		LIMIT 1`
 
 	SelectBooksByUserId = `SELECT id, title, isbn, image_url, user_id FROM Books
 		WHERE user_id = $1 ORDER DESC LIMIT 10`
@@ -71,22 +86,6 @@ type Book struct {
 	ImageUrl string `json:"image_url"`
 	UserId   int64  `json:"user_id,omitempty"`
 	Username string `json:"username"`
-}
-
-type BookResponse struct {
-	Id       int64  `json:"id"`
-	Title    string `json:"title"`
-	Isbn     string `json:"isbn"`
-	ImageUrl string `json:"image_url"`
-
-	Status string `json:"status"`
-
-	User struct {
-		Id int64 `json:"id"`
-		Username string `json:"username"`
-		City string `json:"city"`
-		State string `json:"state"`
-	}
 }
 
 // Initializer that stores a reference to the db connection.
@@ -165,11 +164,46 @@ func (b *Book) Create() (err error) {
 	return
 }
 
+type BookResponse struct {
+	Id       int64  `json:"id"`
+	Title    string `json:"title"`
+	Isbn     string `json:"isbn"`
+	ImageUrl string `json:"image_url"`
+
+	Status string `json:"status,omitempty"`
+
+	Owner struct {
+		Id       int64  `json:"id"`
+		DisplayName string `json:"display_name"`
+		City     string `json:"city"`
+		State    string `json:"state"`
+	} `json:"owner"`
+}
+
+func (s BookSchema) GetBookResponse(id int64) (br BookResponse, err error) {
+	rows, err := s.db.Query(SelectBookResponse, id)
+	if err != nil {
+		return
+	}
+	err = scanBookResponse(rows, &br)
+	return
+}
+
+func scanBookResponse(r *sql.Rows, b *BookResponse) (err error) {
+	if r.Next() {
+		err = r.Scan(&b.Id, &b.Title, &b.Isbn, &b.ImageUrl,
+			&b.Owner.Id, &b.Owner.DisplayName, &b.Owner.City, &b.Owner.State)
+	} else {
+		err = ErrNotFoundBook
+	}
+	return
+}
+
 func scanFullBook(r *sql.Rows, b *Book) (err error) {
 	if r.Next() {
 		err = r.Scan(&b.Id, &b.Title, &b.Isbn, &b.ImageUrl, &b.UserId, &b.Username)
 	} else {
-		err = ErrNotFoundUser
+		err = ErrNotFoundBook
 	}
 	return
 }
@@ -179,7 +213,7 @@ func scanBook(r *sql.Rows, b *Book) (err error) {
 	if r.Next() {
 		err = r.Scan(&b.Id, &b.Title, &b.Isbn, &b.ImageUrl, &b.UserId)
 	} else {
-		err = ErrNotFoundUser
+		err = ErrNotFoundBook
 	}
 	return
 }
