@@ -17,7 +17,6 @@ const (
 )
 
 const (
-	// STATUS SHOULD BE SOME KIND OF ENUM
 	CreateTableTrades = `
 	DO $$
 	BEGIN
@@ -70,9 +69,26 @@ const (
 	GetTrade = `SELECT DISTINCT ON(trades.id) trades.id, books.title FROM Trades, Users, Books WHERE trades.user_id = $1 OR books.user_id = $1`
 
 	InsertTrade = `INSERT INTO Trades (user_id, book_id) VALUES ($1, $2)`
+	
+	// find trade by tradeid
+	// validate that trades.book_id's book.user_id is userid
+	// update trades
+	// update books
 	UpdateTrade = `UPDATE Trades
-		SET status = $2
+		SET status = CASE
+			WHEN user_id = $2 THEN status 'StatusAccepted'
+			ELSE status 'StatusCanceled'
+		END
+		WHERE book_id = $1`
+
+	UpdateBookOwner = `UPDATE Books
+		SET user_id = $2
 		WHERE id = $1`
+
+	SelectById = `SELECT id, book_id, user_id, status
+		FROM Trades
+		WHERE id = $1
+		LIMIT 1`
 )
 
 // Singleton handle to UserSchema.
@@ -88,8 +104,8 @@ type TradeSchema struct {
 // Trade model.
 type Trade struct {
 	Id     int64  `json:"id"`
-	UserId int64  `json:"user_id"`
 	BookId int64  `json:"book_id"`
+	UserId int64  `json:"user_id"`
 	Status string `json:"status"`
 }
 
@@ -176,4 +192,34 @@ func scanTradeResponse(r *sql.Rows, t *TradeResponse) error {
 func (s TradeSchema) Create(userid, bookid int64) (err error) {
 	_, err = s.db.Exec(InsertTrade, userid, bookid)
 	return
+}
+
+// Trade-Accepting funcs
+
+func (s TradeSchema) FindById(id string) (t Trade, err error) {
+	rows, err := s.db.Query(SelectById, id)
+	if err != nil {
+		return
+	}
+	err = scanTrade(rows, &t)
+	return
+}
+
+func scanTrade(r *sql.Rows, t *Trade) (err error) {
+	if r.Next() {
+		err = r.Scan(&t.Id, &t.BookId, &t.UserId, &t.Status)
+	} else {
+		err = ErrNotFoundTrade
+	}
+	return
+}
+
+func (t *Trade) AcceptTrade() error {
+	if _, err := Trades.db.Exec(UpdateTrade, t.Id, t.UserId); err != nil {
+		return err
+	}
+	if _, err := Books.db.Exec(UpdateBookOwner, t.BookId, t.UserId); err != nil {
+		return err
+	}
+	return nil
 }

@@ -18,9 +18,9 @@ const (
 	SelectBookById = `SELECT books.id, title, isbn, image_url, user_id, username FROM Books, Users
 		WHERE books.id = $1 AND users.id = books.user_id
 		LIMIT 1`
-	SelectBookByIsbn = `SELECT books.id, title, isbn, image_url, user_id FROM Books
-		WHERE isbn = $1
-		LIMIT 1`
+	// SelectBookByIsbn = `SELECT books.id, title, isbn, image_url, user_id FROM Books
+	// 	WHERE isbn = $1
+	// 	LIMIT 1`
 	SelectBooks = `SELECT
 		DISTINCT ON (books.id) 
 			books.id
@@ -134,15 +134,15 @@ func (s BookSchema) FindById(id int64) (book Book, err error) {
 	return
 }
 
-func (s BookSchema) Find(isbn string) (book Book, err error) {
-	rows, err := s.db.Query(SelectBookByIsbn, isbn)
-	if err != nil {
-		return
-	}
+// func (s BookSchema) Find(isbn string) (book Book, err error) {
+// 	rows, err := s.db.Query(SelectBookByIsbn, isbn)
+// 	if err != nil {
+// 		return
+// 	}
 
-	err = scanBook(rows, &book)
-	return
-}
+// 	err = scanBook(rows, &book)
+// 	return
+// }
 
 func (b *Book) UpdateUser(userId int64) (err error) {
 	_, err = Books.db.Exec(UpdateBookUser, b.Id, userId)
