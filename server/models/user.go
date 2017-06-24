@@ -12,14 +12,15 @@ const (
 	CreateTableUsers = `CREATE TABLE IF NOT EXISTS Users (
 		id            bigserial    NOT NULL UNIQUE,
 		username      varchar(64)  NOT NULL UNIQUE,
+		display_name  varchar(64)  NOT NULL,
 		password_hash varchar(64)  NOT NULL,
 		city          varchar(128),
 		state         varchar(64)
 	)`
-	SelectUserByName = `SELECT id, username, password_hash, city, state FROM Users
+	SelectUserByName = `SELECT id, username, display_name, password_hash, city, state FROM Users
 		WHERE username = $1
 		LIMIT 1`
-	InsertUser         = `INSERT INTO Users (username, password_hash) VALUES ($1, $2)`
+	InsertUser         = `INSERT INTO Users (username, display_name, password_hash) VALUES ($1, $1, $2)`
 	UpdateUserLocation = `UPDATE Users
 		SET city = $2,
 		    state = $3
@@ -43,6 +44,7 @@ type UserSchema struct {
 type User struct {
 	Id           int64          `sql:"id"`
 	Username     string         `sql:"username"`
+	DisplayName  string `sql:"display_name"`
 	PasswordHash []byte         `sql:"password_hash"`
 	City         sql.NullString `sql:"city"`
 	State        sql.NullString `sql:"state"`
@@ -113,7 +115,7 @@ func (u *User) SetPasswordHash(password []byte) error {
 // SQL scanner helper
 func scanUser(r *sql.Rows, u *User) (err error) {
 	if r.Next() {
-		err = r.Scan(&u.Id, &u.Username, &u.PasswordHash, &u.City, &u.State)
+		err = r.Scan(&u.Id, &u.Username, &u.DisplayName, &u.PasswordHash, &u.City, &u.State)
 	} else {
 		err = ErrNotFoundUser
 	}
