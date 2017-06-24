@@ -6,11 +6,11 @@ import { postTrade } from '../actions'
 import { Link, NavLink, Route, withRouter } from 'react-router-dom'
 import PrivateRoute from './PrivateRoute'
 
-const mapStateToProps = ({ username, books }) => (
+const mapStateToProps = ({ user, books }) => (
   {
-    isLoggedIn: !!username,
+    isLoggedIn: !!user.username,
     books,
-    username,
+    user,
   }
 )
 
@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch, { match, isLoggedIn }) => ({
     .catch(console.warn),
 })
 
-const BookBrowser = ({ isLoggedIn, username, books, match, onTrade, history }) => (
+const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
   <div>
     <div className='tab-container'>
       <NavLink
@@ -47,14 +47,11 @@ const BookBrowser = ({ isLoggedIn, username, books, match, onTrade, history }) =
       <BookTable
         books={books.all}
         controls={(book) => {
-          if (book.username !== username) {
+          if (book.username !== user.username) {
             return (
               <button onClick={
                 () => history.push('/book/'+book.id)
               }>Tradeable</button>
-              // <button onClick={
-              //   onTrade(book.id)
-              // }>Request Trade</button>
             )
           }
         }}

@@ -11,11 +11,13 @@ x GET  /api/books/autocomplete
 √ GET  /api/books/mybooks
 √ GET  /api/trades/incoming
 √ GET  /api/trades/outgoing
-  GET  /api/account
+x GET  /api/account
 √ GET  /api/user/username
 √ POST /api/user
 √ POST /api/trade
-  PUT  /api/trade
+√ PUT  /api/trade/:id
+√ DEL  /api/trade/:id
+√ GET  /api/book
 
 Navigable react-router routes
 /                 root

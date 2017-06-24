@@ -1,12 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import AuthenticationForm from '../components/AuthenticationForm'
-import { submitLogin } from '../actions/session'
+import { submitLogin, submitSignup } from '../actions'
 import { Redirect, withRouter } from 'react-router-dom'
 
-const mapStateToProps = ({ username }) => ({
+const mapStateToProps = ({ user }) => ({
   buttonTitle: 'Sign In',
-  isLoggedIn: username !== null,
+  isLoggedIn: !!user.username,
 })
 
 const mapDispatchToProps = (dispatch, { history, location }) => ({
@@ -14,8 +14,20 @@ const mapDispatchToProps = (dispatch, { history, location }) => ({
     e.preventDefault()
     const username = e.target.elements['username'].value
     const password = e.target.elements['password'].value
-    dispatch(submitLogin(username, password))
-      .catch((err) => console.warn(err))
+    
+    if (location.pathname === '/signup') {
+      const password2 = e.target.elements['password-repeat'].value
+      if (password2 !== password) {
+        console.warn('mismatching passwords')
+        return
+      }
+      console.log(username, password)
+      dispatch(submitSignup(username, password))
+        .catch(console.warn)
+    } else {
+      dispatch(submitLogin(username, password))
+        .catch(console.warn)
+    }    
   },
 })
 
@@ -23,7 +35,17 @@ const RedirectingSignin = ({ isLoggedIn, history, location, ...rest }) => (
   isLoggedIn ? (
     <Redirect to={location.state && location.state.from || { pathname: '/' }} />
   ) : (
-    <AuthenticationForm {...rest} />
+    <AuthenticationForm
+      {
+        ...{
+          history,
+          location,
+          isLoggedIn,
+        }
+      }
+      {...rest}
+      isSignup={location.pathname === '/signup'}
+    />
   )
 )
 

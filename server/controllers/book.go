@@ -40,11 +40,12 @@ func GetBook(w http.ResponseWriter, r *http.Request) {
 
 		trade, err := models.Trades.FindByUser(user.Id, book.Id)
 		if err != nil {
-			book.Status = StatusNotTraded
+			book.Trade.Status = StatusNotTraded
 		} else if trade.Status == "" {
-			book.Status = StatusNotTraded
+			book.Trade.Status = StatusNotTraded
 		} else {
-			book.Status = trade.Status
+			book.Trade.Status = trade.Status
+			book.Trade.Id = trade.Id
 		}
 	}
 

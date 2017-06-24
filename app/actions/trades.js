@@ -1,7 +1,18 @@
 import * as T from './types'
 import request from 'superagent'
+import { getBook } from './books'
 
 export const postTrade = (book_id) => (dispatch) => request
+  .post('/api/trade')
+  .send({ book_id })
+  .then(({ body }) => body)
+  .then(({ ok, message }) => {
+    if (!ok) {
+      throw new Error(message)
+    }
+  })
+
+export const postTradeFromPreview = (book_id) => (dispatch) => request
   .post('/api/trade')
   .send({ book_id })
   .then(({ body }) => body)
@@ -22,10 +33,19 @@ export const acceptTrade = (id) => (dispatch) => request
     }
   })
 
+export const cancelTradeFromPreview = (id) => (dispatch) => request
+  .del('/api/trade/'+id)
+  .then(({ body }) => body)
+  .then(({ ok, message }) => {
+    if (!ok) {
+      throw new Error(message)
+    }
+  })
+
 export const cancelTrade = (id) => (dispatch) => request
   .del('/api/trade/'+id)
   .set('Accept', 'application/json')
-  .then((resp) => (console.log(resp), resp.body))
+  .then(({ body }) => body)
   .then(({ ok, message }) => {
     if (ok) {
       dispatch(getOutgoing())

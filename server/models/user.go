@@ -23,7 +23,8 @@ const (
 	InsertUser         = `INSERT INTO Users (username, display_name, password_hash) VALUES ($1, $1, $2)`
 	UpdateUserLocation = `UPDATE Users
 		SET city = $2,
-		    state = $3
+		    state = $3,
+		    display_name = $4
 		WHERE username = $1`
 	UpdateUserPassword = `UPDATE Users
 		SET password_hash = $2
@@ -42,12 +43,12 @@ type UserSchema struct {
 
 // User model.
 type User struct {
-	Id           int64          `sql:"id"`
-	Username     string         `sql:"username"`
-	DisplayName  string         `sql:"display_name"`
-	PasswordHash []byte         `sql:"password_hash"`
-	City         sql.NullString `sql:"city"`
-	State        sql.NullString `sql:"state"`
+	Id           int64          `json:"id"`
+	Username     string         `json:"username"`
+	DisplayName  string         `json:"display_name"`
+	PasswordHash []byte         `json:"-"`
+	City         sql.NullString `json:"city"`
+	State        sql.NullString `json:"state"`
 }
 
 // Initializer that stores a reference to the db connection.
@@ -88,8 +89,8 @@ func (u *User) Create() (err error) {
 	return
 }
 
-func (u *User) SetLocation(city string, state string) (err error) {
-	_, err = Users.db.Exec(UpdateUserLocation, u.Username, city, state)
+func (u *User) SetLocation(city string, state string, display_name string) (err error) {
+	_, err = Users.db.Exec(UpdateUserLocation, u.Username, city, state, display_name)
 	return
 }
 

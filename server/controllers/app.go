@@ -6,6 +6,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+
+	"github.com/mtso/booker/server/models"
 )
 
 var indexTemplBytes, _ = ioutil.ReadFile("./server/views/index.template.html")
@@ -13,13 +15,40 @@ var indexTempl = template.Must(template.New("").Parse(string(indexTemplBytes)))
 
 var ServeStatic = http.StripPrefix("/static/", http.FileServer(http.Dir("./dist/")))
 
+type UserState struct {
+	Username    *string `json:"username"`
+	DisplayName string  `json:"display_name"`
+	City        string  `json:"city"`
+	State       string  `json:"state"`
+	Id          int64   `json:"id"`
+}
+
 func preloadState(r *http.Request) *interface{} {
-	u, _ := GetUsername(r)
+	var userState UserState
+
+	username, err := GetUsername(r)
+	if err == nil {
+		user, err := models.Users.Find(*username)
+		if err == nil {
+			userState.Username = username
+			userState.DisplayName = user.DisplayName
+			userState.Id = user.Id
+
+			city, _ := user.City.Value()
+			state, _ := user.State.Value()
+			if city != nil {
+				userState.City = city.(string)
+			}
+			if state != nil {
+				userState.State = state.(string)
+			}
+		}
+	}
 
 	state := struct {
-		Username *string `json:"username"`
+		User UserState `json:"user"`
 	}{
-		Username: u,
+		User: userState,
 	}
 
 	var i interface{}

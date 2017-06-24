@@ -15,6 +15,7 @@ const books = (state = defaultState, action) => {
       })
 
     case RECEIVE_BOOK:
+      Object.freeze(state)
       return Object.assign({}, state, {
         preview: action.book,
       })

@@ -21,6 +21,7 @@ const App = () => (
       <Route exact path='/' component={BookBrowser} />
       <Route path='/mybooks' component={BookBrowser} />
       <Route path='/signup' component={SigninForm} />
+      <Route path='/signin' component={SigninForm} />
       <PrivateRoute path='/account' component={AccountFormContainer} />
       <PrivateRoute path='/new' component={BookCreatorContainer} />
       

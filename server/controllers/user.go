@@ -26,6 +26,7 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 	}
 	city, cityOk := body["city"]
 	state, stateOk := body["state"]
+	displayName, displayNameOk := body["display_name"]
 	newPass, newPassOk := body["password"]
 
 	user, err := models.Users.Find(*username)
@@ -34,8 +35,8 @@ func PostUser(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if cityOk && stateOk {
-		err = user.SetLocation(city.(string), state.(string))
+	if cityOk && stateOk && displayNameOk {
+		err = user.SetLocation(city.(string), state.(string), displayName.(string))
 		if err != nil {
 			WriteError(w, err)
 			return
