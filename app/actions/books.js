@@ -50,19 +50,21 @@ export const searchBooks = (q) => (dispatch) => request
   .get('https://www.googleapis.com/books/v1/volumes')
   .query({ q })
   .then(({ body }) => body)
-  .then(({ items }) => {
-    return items.map(({ volumeInfo }) => {
+  .then(({ items }) => items
+    .filter(({ volumeInfo }) => {
+      const { imageLinks, industryIdentifiers } = volumeInfo
+      return imageLinks && industryIdentifiers && industryIdentifiers.some(({ type }) => type === 'ISBN_13')
+    })
+    .map(({ volumeInfo }) => {
       const { title, industryIdentifiers, imageLinks } = volumeInfo
-
       // const isbn = industryIdentifiers.reduce((isbn, id) => {
       //   if (isbn.type === 'ISBN_13') {
       //     return id.identifier
       //   }
       //   return isbn
       // }, '')
-      const id = getFirst(industryIdentifiers, ({ type }) => type === 'ISBN_13')
-      // industryIdentifiers.filter(({ type }) => type === 'ISBN_13')[0]
-      const { identifier } = id 
+      // const isbn = industryIdentifiers.filter(({ type }) => type === 'ISBN_13')[0]
+      const { identifier } = getFirst(industryIdentifiers, ({ type }) => type === 'ISBN_13')
       const { thumbnail } = imageLinks
 
       const books = {
@@ -71,8 +73,7 @@ export const searchBooks = (q) => (dispatch) => request
         image_url: thumbnail,
       }
       return books
-    })
-  })
+    }))
   .then((books) => dispatch(receiveBookSearch(books)))
 
 export const addBook = (book) => (dispatch) => request

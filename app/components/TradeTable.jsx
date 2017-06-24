@@ -1,7 +1,7 @@
 import React from 'react'
 import TradeCell from './TradeCell'
 
-const TradeTable = ({ trades, className, controls }) => (
+const TradeTable = ({ cell: Cell, trades, className, controls }) => (
   <div className={className || 'trade-table'}>
     {trades.map((trade, i, trades) => (
       <TradeCell

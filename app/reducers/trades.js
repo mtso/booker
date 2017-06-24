@@ -1,4 +1,4 @@
-import { RECEIVE_INCOMING } from '../actions/types'
+import { RECEIVE_INCOMING, RECEIVE_OUTGOING } from '../actions/types'
 
 const defaultState = {
   incoming: [],
@@ -10,6 +10,10 @@ const trades = (state = defaultState, action) => {
     case RECEIVE_INCOMING:
       const incoming = action.trades
       return Object.assign({}, state, { incoming })
+
+    case RECEIVE_OUTGOING:
+      const outgoing = action.trades
+      return Object.assign({}, state, { outgoing })
 
     default:
       return state

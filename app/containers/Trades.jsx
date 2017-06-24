@@ -2,7 +2,7 @@ import React from 'react'
 import TradeTable from '../components/TradeTable'
 import { connect } from 'react-redux'
 import { NavLink, Redirect, Route, withRouter } from 'react-router-dom'
-import { getIncoming } from '../actions'
+import { getIncoming, getOutgoing } from '../actions'
 
 const mapStateToProps = ({ trades }) => ({ trades })
 
@@ -10,7 +10,7 @@ const mapDispatchToProps = (dispatch, { match }) => ({
   componentDidMount: dispatch(
     (match.url === '/trades/incoming')
       ? getIncoming()
-      : ({ type: 'NOOP' })
+      : getOutgoing()
   ).catch(console.warn),
 })
 
@@ -30,9 +30,15 @@ const Trades = ({ trades, match }) => (
       >Outgoing</NavLink>
     </div>
     <Route path={'/trades/incoming'} component={() => (
-      <TradeTable trades={trades.incoming}/>
+      <TradeTable trades={
+        // TODO: there may be an opportunity to try using one
+        // Route with match.params.type or match.url, etc.
+        trades.incoming
+      } cell={'temp'} />
     )} />
-    <Route path={'/trades/outgoing'} component={() => (<p>outgoing</p>)} />
+    <Route path={'/trades/outgoing'} component={() => (
+      <TradeTable trades={trades.outgoing} cell={'temp'} />
+    )} />
   </div>
 )
 

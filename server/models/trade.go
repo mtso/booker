@@ -36,8 +36,8 @@ const (
 
 	GetIncoming = `SELECT DISTINCT ON(trades.id)
 			trades.id,
-			trades.user_id,
 			trades.book_id,
+			trades.user_id,
 			trades.status,
 			users.username,
 			users.city,
@@ -63,13 +63,14 @@ const (
 
 	GetOutgoing = `SELECT DISTINCT ON(trades.id)
 			trades.id,
+			trades.book_id,
+			trades.user_id,
+			trades.status,
 			users.username,
 			users.city,
 			users.state,
-			book_id,
 			books.title,
-			books.image_url,
-			status 
+			books.image_url
 		FROM Trades, Users, Books
 		WHERE trades.user_id = $1
 		AND trades.status = 'StatusRequested'
@@ -102,7 +103,16 @@ type Trade struct {
 	Status string `json:"status"`
 }
 
-type IncomingTrade struct{
+// Initializer that stores a reference to the db connection.
+func ConnectTrades(conn *sql.DB) (err error) {
+	Trades.db = conn
+	_, err = conn.Exec(CreateTableTrades)
+	return
+}
+
+// type 
+
+type TradeResponse struct{
 	Id int64 `json:"id"`
 	BookId int64 `json:"book_id"`
 	UserId int64 `json:"user_id"`
@@ -120,24 +130,41 @@ type IncomingTrade struct{
 	} `json:"book"`
 }
 
-func (s TradeSchema) GetIncomingTrades(userid int64) ([]IncomingTrade, error) {
+func (s TradeSchema) GetIncomingTrades(userid int64) ([]TradeResponse, error) {
 	rows, err := s.db.Query(GetIncoming, userid)
 	if err != nil {
 		return nil, err
 	}
 
-	trades := make([]IncomingTrade, 0)
+	trades := make([]TradeResponse, 0)
 
-	var tr IncomingTrade
+	var tr TradeResponse
 	for scanIncomingTrade(rows, &tr) == nil {
 		trades = append(trades, tr)
 	}
-	log.Println(trades)
+	log.Printf("")
 
 	return trades, nil
 }
 
-func scanIncomingTrade(r *sql.Rows, t *IncomingTrade) error {
+func (s TradeSchema) GetOutgoingTrades(userid int64) ([]TradeResponse, error) {
+	rows, err := s.db.Query(GetOutgoing, userid)
+	if err != nil {
+		return nil, err
+	}
+
+	trades := make([]TradeResponse, 0)
+
+	var tr TradeResponse
+	for scanIncomingTrade(rows, &tr) == nil {
+		trades = append(trades, tr)
+	}
+	// log.Println(trades)
+
+	return trades, nil
+}
+
+func scanIncomingTrade(r *sql.Rows, t *TradeResponse) error {
 	if r.Next() {
 		var city sql.NullString
 		var state sql.NullString
@@ -156,13 +183,6 @@ func scanIncomingTrade(r *sql.Rows, t *IncomingTrade) error {
 	}
 
 	return ErrNotFoundTrade
-}
-
-// Initializer that stores a reference to the db connection.
-func ConnectTrades(conn *sql.DB) (err error) {
-	Trades.db = conn
-	_, err = conn.Exec(CreateTableTrades)
-	return
 }
 
 // // [0] offset

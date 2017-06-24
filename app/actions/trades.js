@@ -27,7 +27,24 @@ export const getIncoming = () => (dispatch) => request
     }
   })
 
+export const getOutgoing = () => (dispatch) => request
+  .get('/api/trades/outgoing')
+  .then(({ body }) => body)
+  .then(({ ok, trades, message }) => {
+    if (ok) {
+      dispatch(receiveOutgoing(trades))
+    } else {
+      throw new Error(message)
+    }
+  })
+
 export const receiveIncoming = (trades) => ({
   type: T.RECEIVE_INCOMING,
   trades,
 })
+
+export const receiveOutgoing = (trades) => ({
+  type: T.RECEIVE_OUTGOING,
+  trades,
+})
+
