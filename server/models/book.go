@@ -99,7 +99,7 @@ func ConnectBooks(conn *sql.DB) (err error) {
 // [1] count
 func (s BookSchema) GetBooks(page ...int) ([]Book, error) {
 	offset := 0
-	count := 1000
+	count := 1000000
 
 	if len(page) > 0 {
 		offset = page[0]
