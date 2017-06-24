@@ -69,7 +69,7 @@ const (
 	GetTrade = `SELECT DISTINCT ON(trades.id) trades.id, books.title FROM Trades, Users, Books WHERE trades.user_id = $1 OR books.user_id = $1`
 
 	InsertTrade = `INSERT INTO Trades (user_id, book_id) VALUES ($1, $2)`
-	
+
 	// find trade by tradeid
 	// validate that trades.book_id's book.user_id is userid
 	// update trades
@@ -80,10 +80,6 @@ const (
 			ELSE status 'StatusCanceled'
 		END
 		WHERE book_id = $1`
-
-	UpdateBookOwner = `UPDATE Books
-		SET user_id = $2
-		WHERE id = $1`
 
 	SelectById = `SELECT id, book_id, user_id, status
 		FROM Trades
@@ -218,7 +214,7 @@ func (t *Trade) AcceptTrade() error {
 	if _, err := Trades.db.Exec(UpdateTrade, t.Id, t.UserId); err != nil {
 		return err
 	}
-	if _, err := Books.db.Exec(UpdateBookOwner, t.BookId, t.UserId); err != nil {
+	if _, err := Books.db.Exec(UpdateBookUser, t.BookId, t.UserId); err != nil {
 		return err
 	}
 	return nil

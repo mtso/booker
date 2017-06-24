@@ -138,7 +138,7 @@ func PutTrade(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp := &JsonResponse{
-		"ok": "true",
+		"ok":      "true",
 		"message": fmt.Sprintf("Accepted trade %d", trade.Id),
 	}
 
