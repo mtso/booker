@@ -11,6 +11,8 @@ import (
 	"github.com/mtso/booker/server/utils"
 )
 
+const StatusNotTraded = "StatusNotTraded"
+
 var ErrMissingFieldBook = errors.New("Missing field: book_id")
 var ErrMissingFieldTrade = errors.New("Missing field: book_id")
 

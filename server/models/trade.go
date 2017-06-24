@@ -8,9 +8,6 @@ import (
 )
 
 const (
-	// StatusRequested = iota
-	// StatusAccepted
-	// StatusCanceled
 	StatusRequested = "StatusRequested"
 	StatusAccepted  = "StatusAccepted"
 	StatusCanceled  = "StatusCanceled"
@@ -94,6 +91,13 @@ const (
 	SelectById = `SELECT id, book_id, user_id, status
 		FROM Trades
 		WHERE id = $1
+		LIMIT 1`
+
+	SelectByUser = `SELECT id, book_id, user_id, status
+		FROM Trades
+		WHERE user_id = $1
+			AND book_id = $2
+		ORDER BY id DESC
 		LIMIT 1`
 )
 
@@ -209,6 +213,15 @@ func (s TradeSchema) FindById(id string) (t Trade, err error) {
 	return
 }
 
+func (s TradeSchema) FindByUser(id int64, bookid int64) (t Trade, err error) {
+	rows, err := s.db.Query(SelectByUser, id, bookid)
+	if err != nil {
+		return
+	}
+	err = scanTrade(rows, &t)
+	return
+}
+
 func scanTrade(r *sql.Rows, t *Trade) (err error) {
 	if r.Next() {
 		err = r.Scan(&t.Id, &t.BookId, &t.UserId, &t.Status)
@@ -236,3 +249,4 @@ func (s TradeSchema) CancelTrade(id string, userid int64) (int64, error) {
 
 	return res.RowsAffected()
 }
+
