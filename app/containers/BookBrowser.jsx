@@ -23,7 +23,7 @@ const mapDispatchToProps = (dispatch, { match, isLoggedIn }) => ({
     .catch(console.warn),
 })
 
-const BookBrowser = ({ isLoggedIn, username, books, match, onTrade }) => (
+const BookBrowser = ({ isLoggedIn, username, books, match, onTrade, history }) => (
   <div>
     <div className='tab-container'>
       <NavLink
@@ -50,8 +50,11 @@ const BookBrowser = ({ isLoggedIn, username, books, match, onTrade }) => (
           if (book.username !== username) {
             return (
               <button onClick={
-                onTrade(book.id)
-              }>Request Trade</button>
+                () => history.push('/book/'+book.id)
+              }>Tradeable</button>
+              // <button onClick={
+              //   onTrade(book.id)
+              // }>Request Trade</button>
             )
           }
         }}
