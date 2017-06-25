@@ -11,7 +11,7 @@ const closeModal = (history) => () => {
 }
 
 const BookPreview = ({ user, history, id, title, image_url, owner, trade,
-  onTrade, onCancel }) => {
+  onTrade, onCancel, onUnauthedTrade }) => {
   // Prevent render if data does not exist
   if (!owner) {
     return (
@@ -21,6 +21,7 @@ const BookPreview = ({ user, history, id, title, image_url, owner, trade,
     )
   }
 
+  const isLoggedIn = !!user.username
   const { display_name, city, state } = owner
 
   let location
@@ -40,7 +41,9 @@ const BookPreview = ({ user, history, id, title, image_url, owner, trade,
   } else if (user.id && owner.id === user.id) {
     tradeControl = null
   } else {
-    tradeControl = <button onClick={onTrade(id)}>Request Trade</button>
+    tradeControl = <button onClick={
+      isLoggedIn ? onTrade(id) : onUnauthedTrade(id)
+    }>Request Trade</button>
   }
 
   return (

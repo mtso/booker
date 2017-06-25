@@ -8,7 +8,7 @@ const mapStateToProps = ({ books, user }) => ({
   ...books.preview,
 })
 
-const mapDispatchToProps = (dispatch, { match, history, location }) => ({
+const mapDispatchToProps = (dispatch, { match, history }) => ({
   componentDidMount: dispatch(getBook(match.params.id)),
   onTrade: (bookid) => () => dispatch(postTradeFromPreview(bookid))
     .then(() => dispatch(getBook(bookid)))
@@ -16,6 +16,7 @@ const mapDispatchToProps = (dispatch, { match, history, location }) => ({
   onCancel: (id) => (bookid) => () => dispatch(cancelTradeFromPreview(id))
     .then(() => dispatch(getBook(bookid)))
     .catch(console.warn),
+  onUnauthedTrade: (bookid) => () => history.push('/signup', { from: '/book/'+bookid }),
 })
 
 export default withRouter(connect(

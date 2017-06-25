@@ -5,7 +5,6 @@ class AccountForm extends Component {
     super(props)
 
     const { display_name = '', city = '', state = '' } = this.props
-
     const pass1 = '', pass2 = ''
 
     this.state = {
@@ -41,7 +40,6 @@ class AccountForm extends Component {
     const {
       onSaveProfile,
       noop,
-
     } = this.props
     return (
       <div>
