@@ -20,6 +20,7 @@ type UserState struct {
 	DisplayName string `json:"display_name"`
 	City string `json:"city"`
 	State string `json:"state"`
+	Id int64 `json:"id"`
 }
 
 func preloadState(w http.ResponseWriter, r *http.Request) *interface{} {
@@ -37,6 +38,7 @@ func preloadState(w http.ResponseWriter, r *http.Request) *interface{} {
 
 		userState.Username = username
 		userState.DisplayName = user.DisplayName
+		userState.Id = user.Id
 		userState.City = city.(string)
 		userState.State = state.(string)
 	}

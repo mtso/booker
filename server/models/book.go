@@ -170,7 +170,10 @@ type BookResponse struct {
 	Isbn     string `json:"isbn"`
 	ImageUrl string `json:"image_url"`
 
-	Status string `json:"status,omitempty"`
+	Trade struct {
+		Id int64 `json:"id,omitempty"`
+		Status string `json:"status"`
+	} `json:"trade,omitempty"`
 
 	Owner struct {
 		Id       int64  `json:"id"`

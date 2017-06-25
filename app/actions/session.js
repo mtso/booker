@@ -26,6 +26,14 @@ export const submitLogin = (username, password) => (dispatch) => request
     }
   })
 
+export const saveProfile = (profile) => (dispatch) => request
+  .post('/api/user')
+  .send({ ...profile })
+  .then(({ body }) => body)
+  .then(({ ok, ...rest }) => {
+    console.log(rest)
+  })
+
 export const submitLogout = () => (dispatch) => request
   .post('/auth/logout')
   .then(({ body }) => body)

@@ -52,9 +52,6 @@ const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
               <button onClick={
                 () => history.push('/book/'+book.id)
               }>Tradeable</button>
-              // <button onClick={
-              //   onTrade(book.id)
-              // }>Request Trade</button>
             )
           }
         }}
