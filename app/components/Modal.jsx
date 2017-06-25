@@ -1,7 +1,7 @@
 import React from 'react'
 
-const Modal = ({ children }) => (
-  <div className='modal-container fade-in'>
+const Modal = ({ children, isFade = true }) => (
+  <div className={'modal-container' + (isFade ? ' fade-in' : '')}>
     <div className='modal-content'>
       {children}
     </div>
