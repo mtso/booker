@@ -46,21 +46,24 @@ func PostSignup(w http.ResponseWriter, r *http.Request) {
 
 	success := err == nil
 
-	response := struct {
-		Success bool   `json:"success"`
-		Message string `json:"message"`
-	}{
-		success,
-		msg,
+	// Save session.
+	session, err := store.Get(r, SessionId)
+	if WriteErrorResponse(w, err) {
+		return
 	}
 
-	js, err := json.Marshal(response)
-	if err != nil {
-		log.Println(err)
+	session.Values["username"] = user
+	if err := session.Save(r, w); err != nil {
+		WriteErrorResponse(w, err)
+		return
 	}
 
-	w.Header().Set("Content-Type", "application/json")
-	w.Write(js)
+	resp := &JsonResponse{
+		"ok":      success,
+		"message": msg,
+	}
+
+	WriteJson(w, resp)
 }
 
 func PostLogin(w http.ResponseWriter, r *http.Request) {

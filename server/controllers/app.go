@@ -16,31 +16,33 @@ var indexTempl = template.Must(template.New("").Parse(string(indexTemplBytes)))
 var ServeStatic = http.StripPrefix("/static/", http.FileServer(http.Dir("./dist/")))
 
 type UserState struct {
-	Username *string `json:"username"`
-	DisplayName string `json:"display_name"`
-	City string `json:"city"`
-	State string `json:"state"`
-	Id int64 `json:"id"`
+	Username    *string `json:"username"`
+	DisplayName string  `json:"display_name"`
+	City        string  `json:"city"`
+	State       string  `json:"state"`
+	Id          int64   `json:"id"`
 }
 
-func preloadState(w http.ResponseWriter, r *http.Request) *interface{} {
+func preloadState(r *http.Request) *interface{} {
 	var userState UserState
 
 	username, err := GetUsername(r)
 	if err == nil {
 		user, err := models.Users.Find(*username)
-		if WriteErrorResponse(w, err) {
-			return nil
+		if err == nil {
+			userState.Username = username
+			userState.DisplayName = user.DisplayName
+			userState.Id = user.Id
+
+			city, _ := user.City.Value()
+			state, _ := user.State.Value()
+			if city != nil {
+				userState.City = city.(string)
+			}
+			if state != nil {
+				userState.State = state.(string)
+			}
 		}
-
-		city, _ := user.City.Value()
-		state, _ := user.State.Value()
-
-		userState.Username = username
-		userState.DisplayName = user.DisplayName
-		userState.Id = user.Id
-		userState.City = city.(string)
-		userState.State = state.(string)
 	}
 
 	state := struct {
@@ -57,7 +59,7 @@ func preloadState(w http.ResponseWriter, r *http.Request) *interface{} {
 func ServeApp(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 
-	st := preloadState(w, r)
+	st := preloadState(r)
 
 	js, err := json.Marshal(st)
 	if WriteErrorResponse(w, err) {

@@ -249,4 +249,3 @@ func (s TradeSchema) CancelTrade(id string, userid int64) (int64, error) {
 
 	return res.RowsAffected()
 }
-

@@ -47,13 +47,34 @@ class AccountForm extends Component {
 
         <form className='account-form' onSubmit={onSaveProfile || noop}>
           <label htmlFor='display-name'>Profile Name</label>
-          <input onChange={this.onChange('display_name')} type='text' id='display-name' name='display-name' placeholder='Profile Name' value={this.state.display_name} />
+          <input
+            onChange={this.onChange('display_name')}
+            type='text'
+            id='display-name'
+            name='display-name'
+            placeholder='Profile Name'
+            value={this.state.display_name || ''}
+          />
 
           <label htmlFor='city'>City</label>
-          <input onChange={this.onChange('city')} type='text' id='city' name='city' placeholder='City' value={this.state.city} />
+          <input
+            onChange={this.onChange('city')}
+            type='text'
+            id='city'
+            name='city'
+            placeholder='City'
+            value={this.state.city || ''}
+          />
 
           <label htmlFor='state'>State</label>
-          <input onChange={this.onChange('state')} type='text' id='state' name='state' placeholder='State' value={this.state.state} />
+          <input
+            onChange={this.onChange('state')}
+            type='text'
+            id='state'
+            name='state'
+            placeholder='State'
+            value={this.state.state || ''}
+          />
 
           <input type='submit' value='Save Profile' />
         </form>

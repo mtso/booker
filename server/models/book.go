@@ -171,15 +171,15 @@ type BookResponse struct {
 	ImageUrl string `json:"image_url"`
 
 	Trade struct {
-		Id int64 `json:"id,omitempty"`
+		Id     int64  `json:"id,omitempty"`
 		Status string `json:"status"`
 	} `json:"trade,omitempty"`
 
 	Owner struct {
-		Id       int64  `json:"id"`
+		Id          int64  `json:"id"`
 		DisplayName string `json:"display_name"`
-		City     string `json:"city"`
-		State    string `json:"state"`
+		City        string `json:"city"`
+		State       string `json:"state"`
 	} `json:"owner"`
 }
 
