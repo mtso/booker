@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import Nav from '../components/Nav'
 import { submitLogout } from '../actions/session'
 
-const mapStateToProps = ({ username }) => ({
-  isLoggedIn: username !== null,
+const mapStateToProps = ({ user }) => ({
+  isLoggedIn: !!user.username,
 })
 
 const mapDispatchToProps = (dispatch, { history }) => ({

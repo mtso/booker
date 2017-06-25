@@ -35,8 +35,8 @@ const PrivateRoute = ({ isLoggedIn, render, component: Component, ...rest }) => 
   }
 }
 
-const mapStateToProps = ({ username }) => ({
-  isLoggedIn: username !== null,
+const mapStateToProps = ({ user }) => ({
+  isLoggedIn: !!user.username,
 })
 
 export default withRouter(connect(

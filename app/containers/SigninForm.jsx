@@ -4,9 +4,9 @@ import AuthenticationForm from '../components/AuthenticationForm'
 import { submitLogin } from '../actions/session'
 import { Redirect, withRouter } from 'react-router-dom'
 
-const mapStateToProps = ({ username }) => ({
+const mapStateToProps = ({ user }) => ({
   buttonTitle: 'Sign In',
-  isLoggedIn: username !== null,
+  isLoggedIn: !!user.username,
 })
 
 const mapDispatchToProps = (dispatch, { history, location }) => ({

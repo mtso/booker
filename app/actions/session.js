@@ -10,7 +10,17 @@ export const submitLogin = (username, password) => (dispatch) => request
   .then(({ body }) => body)
   .then(({ ok }) => {
     if (ok) {
-      dispatch(login(username))
+      request
+        .get('/api/user/'+username)
+        .then(({ body }) => body)
+        .then(({ ok, message, ...user }) => {
+          if (ok) {
+            dispatch(login(user))
+          } else {
+            throw new Error(message)
+          }
+        })
+        .catch(console.warn)
     } else {
       throw new Error("invalid password")
     }
@@ -27,9 +37,14 @@ export const submitLogout = () => (dispatch) => request
     }
   })
 
-export const login = (username) => ({
+export const login = (user) => ({
   type: T.LOGIN,
-  username,
+  user,
 })
 
 export const logout = () => ({type: T.LOGOUT})
+
+export const receiveUser = (user) => ({
+  type: T.RECEIVE_USER,
+  user,
+})
