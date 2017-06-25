@@ -5,7 +5,6 @@ import { submitLogin, submitSignup } from '../actions'
 import { Redirect, withRouter } from 'react-router-dom'
 
 const mapStateToProps = ({ user }) => ({
-  buttonTitle: 'Sign In',
   isLoggedIn: !!user.username,
 })
 
@@ -21,7 +20,6 @@ const mapDispatchToProps = (dispatch, { history, location }) => ({
         console.warn('mismatching passwords')
         return
       }
-      console.log(username, password)
       dispatch(submitSignup(username, password))
         .catch(console.warn)
     } else {
@@ -41,10 +39,10 @@ const RedirectingSignin = ({ isLoggedIn, history, location, ...rest }) => (
           history,
           location,
           isLoggedIn,
+          ...rest,
+          isSignup: location.pathname === '/signup',
         }
       }
-      {...rest}
-      isSignup={location.pathname === '/signup'}
     />
   )
 )

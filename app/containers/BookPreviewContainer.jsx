@@ -16,7 +16,10 @@ const mapDispatchToProps = (dispatch, { match, history }) => ({
   onCancel: (id) => (bookid) => () => dispatch(cancelTradeFromPreview(id))
     .then(() => dispatch(getBook(bookid)))
     .catch(console.warn),
-  onUnauthedTrade: (bookid) => () => history.push('/signup', { from: '/book/'+bookid }),
+  onUnauthedTrade: (bookid) => () => {
+    console.log(bookid)
+    history.push('/signup', { from: '/book/'+bookid })
+  },
 })
 
 export default withRouter(connect(

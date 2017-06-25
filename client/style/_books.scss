@@ -1,6 +1,6 @@
 @import 'mixins';
 @import 'animations';
-
+@import 'variables';
 
 .book-table {
   @include transition(0.22s);
@@ -10,3 +10,67 @@
   }
 }
 
+.book-cell {
+  position: relative;
+  img {
+    // position: absolute;
+  }
+}
+
+.cell-button-container {
+  left: 0;
+  top: 20px;
+  width: 200px;
+  text-align: right;
+  position: absolute;
+
+  .cell-button {
+    background-image: url('/static/img/trade-icon.svg');
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 40px;
+    height: 30px;
+    font-size: 0;
+    color: gray;
+    border: 1px solid lightgray;
+    border-radius: 5px;
+    padding: 0.3em 0.5em;
+    background-color: white;
+    margin-right: 20px;
+  }
+  
+  .cell-button:hover {
+    background-image: url('/static/img/trade-icon-over.svg');
+    background-color: white;
+    color: $primary-color;
+    border-color: $primary-color;
+  }
+}
+
+.float-right {
+  float: right;
+}
+
+.action-button {
+  z-index: 2000;
+  font-size: 0.8em;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: $primary-color;
+  color: white;
+  padding: 0.4em 0.8em;
+}
+
+.action-button:hover {
+  color: white;
+  background-color: lighten($primary-color, 7%);
+}
+
+.tab-container {
+  width: 100%;
+}
+
+.add-button {
+  margin-left: 0.7em;
+  right: 2em;
+}

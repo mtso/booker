@@ -41,6 +41,7 @@ const BookPreview = ({ user, history, id, title, image_url, owner, trade,
   } else if (user.id && owner.id === user.id) {
     tradeControl = null
   } else {
+    console.log(isLoggedIn)
     tradeControl = <button onClick={
       isLoggedIn ? onTrade(id) : onUnauthedTrade(id)
     }>Request Trade</button>

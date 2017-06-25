@@ -29,4 +29,12 @@ userId | string    | not null
 bookId | string    | not null
 status | integer   | not null, (isPending\|isApproved\|isFailed)
 
+# Tests
+
+UPDATE trades
+   SET status = CASE
+                WHEN user_id = $2 THEN 'StatusAccepted'
+                ELSE 'StatusCanceled' 
+                END
+   WHERE book_id = $1
 
