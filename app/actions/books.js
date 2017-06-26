@@ -1,4 +1,4 @@
-import { RECEIVE_BOOK, RECEIVE_BOOKS, RECEIVE_MYBOOKS, RECEIVE_BOOKSEARCH } from './types'
+import { RECEIVE_BOOK, RECEIVE_BOOKS, RECEIVE_MYBOOKS, RECEIVE_BOOKSEARCH, CLEAR_SEARCH } from './types'
 import request from 'superagent'
 
 // Async thunks
@@ -57,20 +57,18 @@ export const searchBooks = (q) => (dispatch) => request
     })
     .map(({ volumeInfo }) => {
       const { title, industryIdentifiers, imageLinks } = volumeInfo
-      // const isbn = industryIdentifiers.reduce((isbn, id) => {
-      //   if (isbn.type === 'ISBN_13') {
-      //     return id.identifier
-      //   }
-      //   return isbn
-      // }, '')
-      // const isbn = industryIdentifiers.filter(({ type }) => type === 'ISBN_13')[0]
       const { identifier } = getFirst(industryIdentifiers, ({ type }) => type === 'ISBN_13')
       const { thumbnail } = imageLinks
+
+      const { description, pageCount, categories } = volumeInfo
 
       const books = {
         title,
         isbn: identifier,
         image_url: thumbnail,
+        description,
+        pageCount,
+        categories,
       }
       return books
     }))
@@ -102,3 +100,4 @@ export const receiveMyBooks = (books) => ({
   type: RECEIVE_MYBOOKS,
   books,
 })
+

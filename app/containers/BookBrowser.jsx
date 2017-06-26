@@ -50,14 +50,15 @@ const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
           >Add a Book</Link>}
       </div>
     </div>
-    <Route exact path='/' component={() => (
-      <div className='content-container'>
+    <div className='content-container'>
+      <Route exact path='/' render={() => (
         <BookTable
+          isLinked={true}
           books={books.all}
           controls={(book) => {
             if (book.username !== user.username) {
               return (
-                <div className='cell-button-container'>
+                <div className='cell-button-container cell-topright'>
                   <button className='cell-button' onClick={
                     () => history.push('/book/'+book.id)
                   }>Tradeable</button>
@@ -66,11 +67,14 @@ const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
             }
           }}
         />
-      </div>
-    )} />
-    <PrivateRoute exact path='/mybooks' component={() => (
-      <BookTable books={books.mybooks} />
-    )} />
+      )} />
+      <PrivateRoute exact path='/mybooks' render={() => (
+        <BookTable
+          books={books.mybooks}
+          isLinked={true}
+        />
+      )} />
+    </div>
   </div>
 )
 

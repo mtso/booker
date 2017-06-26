@@ -8,22 +8,16 @@
   img {
     -webkit-animation: fadein 0.22s;
   }
+
+  padding-right: 2em;
+  padding-bottom: 3em;
 }
 
 .book-cell {
   position: relative;
-  img {
-    // position: absolute;
-  }
 }
 
 .cell-button-container {
-  left: 0;
-  top: 20px;
-  width: 200px;
-  text-align: right;
-  position: absolute;
-
   .cell-button {
     background-image: url('/static/img/trade-icon.svg');
     background-repeat: no-repeat;
@@ -54,16 +48,23 @@
 .action-button {
   z-index: 2000;
   font-size: 0.8em;
-  font-weight: 600;
+  font-weight: $semibold;
   border-radius: 4px;
-  background-color: $primary-color;
-  color: white;
+  border: 1px solid white;
+  background-color: white;
+  color: $primary-color;
   padding: 0.4em 0.8em;
 }
 
-.action-button:hover {
-  color: white;
-  background-color: lighten($primary-color, 7%);
+.page-header:hover {
+  .action-button {
+    border: 1px solid lightgray;
+  }
+
+  .action-button:hover {
+    color: $primary-color;
+    border: 1px solid $primary-color;
+  }
 }
 
 .tab-container {
@@ -71,6 +72,56 @@
 }
 
 .add-button {
-  margin-left: 0.7em;
   right: 2em;
+}
+
+.book-table {
+  h2 {
+    font-weight: $regular;
+  }
+
+  h4 {
+    margin: 0;
+    padding: 0;
+  }
+}
+
+.bookcreator-container {
+  margin: 2em auto 4em;
+  padding: 3.6em;
+  background-color: $secondary-color;
+
+  img, .book-detail {
+    margin-bottom: 3em;
+    display: inline-block;
+  }
+
+  img {
+    flex: 1;
+    width: 200px;
+    height: auto;
+  }
+
+  img {
+    width: 200px;
+  }
+
+  .book-detail {
+    margin-left: 1em;
+    flex: 1;
+    position: absolute;
+    width: 200px;
+  }
+
+  .action-button {
+    border: 1px solid lightgray;
+  }
+
+  .action-button:hover {
+    border: 1px solid $primary-color;
+  }
+
+  h4 {
+    margin: 0;
+  }
 }

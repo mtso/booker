@@ -41,13 +41,21 @@ const Trades = ({ trades, match, onAccept, onCancel }) => (
     <div className='content-container'>
       <Route path={'/trades/incoming'} component={() => (
         <TradeTable
+          isIncoming={true}
           trades={
             // TODO: there may be an opportunity to try using one
             // Route with match.params.type or match.url, etc.
             trades.incoming
           }
           controls={
-            ({ id }) => (<button onClick={onAccept(id)}>Accept Trade</button>)
+            ({ id }) => (
+              <button
+                className='action-button'
+                onClick={onAccept(id)}
+              >
+                Accept Trade
+              </button>
+            )
           }
           cell={'temp'}
         />
@@ -56,7 +64,14 @@ const Trades = ({ trades, match, onAccept, onCancel }) => (
         <TradeTable
           trades={trades.outgoing}
           controls={
-            ({ id }) => (<button onClick={onCancel(id)}>Cancel Trade</button>)
+            ({ id }) => (
+              <button
+                className='action-button'
+                onClick={onCancel(id)}
+              >
+                Cancel Trade
+              </button>
+            )
           }
           cell={'temp'}
         />

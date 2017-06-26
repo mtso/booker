@@ -68,25 +68,19 @@ html, body {
 .fixed-content {
   margin-top: 2.5em;
   margin-left: 2.4em;
+
+  /* AccountForm-only layout */
+  .content-title {
+    margin-bottom: 2em;
+  }
 }
-
-// @media all and (max-width: 1200px) {
-//   nav {
-//     // width: 300px;
-//   }
-
-//   .content {
-//     // margin-left: 0px;
-//     left: $sidebar-width;
-//   }
-// }
 
 .auth-container {
   -webkit-animation: fadein 0.22s;
 
   background-color: $secondary-color;
   margin: 3em auto 1em;
-  padding: 4em 4em 6em;
+  padding: 4em 4em 5em;
 
   .float-right {
     float: right;
@@ -97,13 +91,14 @@ html, body {
   }
 
   input[type=text], input[type=password] {
-    width: 100%;
+    font-family: $font;
+    width: 96%;
   }
 
   input[type=submit] {
     color: white;
     background-color: $primary-color;
-    font-weight: 600;
+    font-weight: $semibold;
     padding: 0.5em 1em;
     width: 120px;
     border: none;
@@ -116,4 +111,143 @@ html, body {
     cursor: pointer;
     background-color: lighten($primary-color, 7%);
   }
+}
+
+.bookcreator-container {
+  -webkit-animation: fadein 0.22s;
+
+  background-color: $secondary-color;
+  margin: 3em auto 1em;
+  padding: 3em 3em 5em;
+  height: auto;
+  max-height: 100%;
+  overflow: auto;
+
+  .float-right {
+    float: right;
+  }
+
+  .bookcreator-header {
+    margin-bottom: 2em;
+
+    .content-title, button {
+      display: inline-block;
+    }
+
+    .content-title, h2 {
+      margin-top: 0;
+    }
+  }
+
+  .book-table {
+    width: 100%;
+
+    .book-cell {
+      height: 100%;
+      display: absolute;
+    }
+
+    .book-cell:last-child {
+      margin-bottom: 10em;
+    }
+  }
+
+  .cell-detail {
+    position: absolute;
+    text-align: left;
+    top: 0;
+    left: 220px;
+
+    h4 {
+      line-height: 1.4em;
+    }
+
+    .action-button {
+      margin-top: 1.4em;
+    }
+  }
+}
+
+input[type=search] {
+  -webkit-appearance: textfield;
+  appearance: textfield;
+}
+
+input[type=search]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+.searchbox-container {
+  input[type=search] {
+    margin: 0;
+    width: 80%;
+    font-size: 1em;
+    font-family: $font;
+    height: 38px;
+    padding: 0.3em 0.5em;
+    border-radius: 4px 0 0 4px;
+    border: 1px solid lightgray;
+  }
+
+  input[type=submit] {
+    margin-left: -1px;
+    z-index: 1000;
+    height: 38px;
+    display: inline;
+    color: white;
+    background-color: $primary-color;
+    font-weight: $semibold;
+    padding: 0.5em 1em;
+    width: 20%;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    font-size: 1em;
+    font-family: $font;
+  }
+
+  input[type=submit]:hover {
+    cursor: pointer;
+    background-color: lighten($primary-color, 7%);
+  }
+}
+
+.trade-table {
+  margin-bottom: 4em;
+}
+
+.trade-cell {
+  display: -webkit-flex;
+  display: flex;
+  -webkit-align-items: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  -webkit-flex-wrap: wrap;
+  margin: 1em auto;
+
+  .trade-detail, img, a {
+    display: inline-block;
+  }
+
+  a {
+    margin-right: 1em;
+  }
+
+  .trade-detail {
+    width: 200px;
+    margin-right: 40px;
+    margin-bottom: 3em;
+  }
+
+  .action-button {
+    border: 1px solid lightgray;
+  }
+}
+
+.action-button {
+  border: 1px solid lightgray;
+}
+
+.action-button:hover {
+  color: $primary-color;
+  border: 1px solid $primary-color;
 }

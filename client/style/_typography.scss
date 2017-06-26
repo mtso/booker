@@ -5,6 +5,19 @@ html, body, a, button {
   font-family: 'Source Sans Pro', 'Open Sans', Helvetica,  sans-serif;
 }
 
+h1, h2 {
+  font-weight: $regular;
+}
+
+h3, h4, h5, h6 {
+  color: $primary-invert;
+}
+
+h4 {
+  line-height: 1.4em;
+  font-weight: $semibold;
+}
+
 .content-title {
   margin: 0.5em 0 1em;
   font-size: 1.3em;
@@ -48,17 +61,6 @@ h3 {
   font-size: 0.8em;
 }
 
-.primary-button {
-  background-color: $primary-color;
-  color: white;
+input {
   font-family: $font;
-  font-size: 1em;
-  padding: 0.4em 1em 0.5em;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-}
-
-.primary-button:hover {
-  background-color: lighten($primary-color, 7%);
 }
