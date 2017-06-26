@@ -68,6 +68,11 @@ html, body {
 .fixed-content {
   margin-top: 2.5em;
   margin-left: 2.4em;
+
+  /* AccountForm-only layout */
+  .content-title {
+    margin-bottom: 2em;
+  }
 }
 
 // @media all and (max-width: 1200px) {
@@ -103,7 +108,7 @@ html, body {
   input[type=submit] {
     color: white;
     background-color: $primary-color;
-    font-weight: 600;
+    font-weight: $bold;
     padding: 0.5em 1em;
     width: 120px;
     border: none;

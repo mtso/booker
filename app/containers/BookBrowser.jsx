@@ -50,27 +50,27 @@ const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
           >Add a Book</Link>}
       </div>
     </div>
-    <Route exact path='/' component={() => (
-      <div className='content-container'>
-        <BookTable
-          books={books.all}
-          controls={(book) => {
-            if (book.username !== user.username) {
-              return (
-                <div className='cell-button-container'>
-                  <button className='cell-button' onClick={
-                    () => history.push('/book/'+book.id)
-                  }>Tradeable</button>
-                </div>
-              )
-            }
-          }}
-        />
-      </div>
-    )} />
-    <PrivateRoute exact path='/mybooks' component={() => (
-      <BookTable books={books.mybooks} />
-    )} />
+    <div className='content-container'>
+      <Route exact path='/' component={() => (
+          <BookTable
+            books={books.all}
+            controls={(book) => {
+              if (book.username !== user.username) {
+                return (
+                  <div className='cell-button-container'>
+                    <button className='cell-button' onClick={
+                      () => history.push('/book/'+book.id)
+                    }>Tradeable</button>
+                  </div>
+                )
+              }
+            }}
+          />
+      )} />
+      <PrivateRoute exact path='/mybooks' component={() => (
+        <BookTable books={books.mybooks} />
+      )} />
+    </div>
   </div>
 )
 

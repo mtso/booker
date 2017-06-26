@@ -1,9 +1,11 @@
+@import 'variables';
+
 .account-form {
   margin-bottom: 2em;
 
   label {
     font-size: 0.9em;
-    font-weight: 600;
+    font-weight: $bold;
   }
 }
 
