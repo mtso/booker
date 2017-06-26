@@ -56,8 +56,10 @@ export const saveProfile = (profile) => (dispatch) => request
   .post('/api/user')
   .send({ ...profile })
   .then(({ body }) => body)
-  .then(({ ok, ...rest }) => {
-    console.log(rest)
+  .then(({ ok, message }) => {
+    if (!ok) {
+      throw new Error(message)
+    }
   })
 
 export const submitLogout = () => (dispatch) => request

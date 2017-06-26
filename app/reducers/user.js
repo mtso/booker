@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from '../actions/types'
+import { LOGIN, LOGOUT, RECEIVE_USER } from '../actions/types'
 
 const defaultState = {
   username: null,
@@ -10,11 +10,13 @@ const defaultState = {
 const user = (state = defaultState, action) => {
   switch(action.type) {
     case LOGIN:
-      console.log(action.user)
       return Object.assign({}, state, action.user)
 
     case LOGOUT:
       return defaultState
+
+    case RECEIVE_USER:
+      return Object.assign({}, state, action.user)
 
     default:
       return state

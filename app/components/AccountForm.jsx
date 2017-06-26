@@ -42,11 +42,13 @@ class AccountForm extends Component {
       noop,
     } = this.props
     return (
-      <div>
+      <div className='fixed-content'>
+        <h2 className='content-title'>
+          Account
+        </h2>
+        
         <h3>Edit Profile</h3>
-
         <form className='account-form' onSubmit={onSaveProfile || noop}>
-          <label htmlFor='display-name'>Profile Name</label>
           <input
             onChange={this.onChange('display_name')}
             type='text'
@@ -56,7 +58,6 @@ class AccountForm extends Component {
             value={this.state.display_name || ''}
           />
 
-          <label htmlFor='city'>City</label>
           <input
             onChange={this.onChange('city')}
             type='text'
@@ -66,7 +67,6 @@ class AccountForm extends Component {
             value={this.state.city || ''}
           />
 
-          <label htmlFor='state'>State</label>
           <input
             onChange={this.onChange('state')}
             type='text'
@@ -76,15 +76,15 @@ class AccountForm extends Component {
             value={this.state.state || ''}
           />
 
-          <input type='submit' value='Save Profile' />
+          <input className='primary-button' type='submit' value='Save Profile' />
         </form>
 
+        <h3>Change Password</h3>
         <form className='account-form' onSubmit={this.onSubmitPassword || noop}>
-          <label htmlFor='password'>New Password</label>
           <input value={this.state.pass1} onChange={this.onChange('pass1')} type='password' id='password' placeholder='New Password' />
           <input value={this.state.pass2} onChange={this.onChange('pass2')} type='password' id='password-repeat' placeholder='Repeat Password' />
 
-          <input type='submit' value='Change Password' />
+          <input className='primary-button' type='submit' value='Change Password' />
         </form>
       </div>
     )

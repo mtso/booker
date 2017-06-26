@@ -11,33 +11,39 @@ const AuthenticationForm = ({ onSubmit, isSignup, location }) => (
     (location.pathname === '/signin' || location.pathname === '/signup')
       ? false : true
   }>
-    { isSignup ? (
-      <Link to='/signin'>Or Sign In.</Link>
-    ) : (
-      <Link to='/signup'>Or Sign Up.</Link>
-    ) }
-    <form onSubmit={onSubmit || defaultAction}>
-      <input
-        type='text'
-        name='username'
-        placeholder='Username'
-      />
-      <input
-        type='password'
-        name='password'
-        placeholder='Password'
-      />
-      { isSignup && (
+    <div className='auth-container'>
+      <Link to='/'>
+        <img className='logo' src='/static/img/book-logo.svg' />
+      </Link>
+
+      { isSignup ? (
+        <Link className='float-right' to='/signin'>Or Sign In.</Link>
+      ) : (
+        <Link className='float-right' to='/signup'>Or Sign Up.</Link>
+      ) }
+      <form onSubmit={onSubmit || defaultAction}>
+        <input
+          type='text'
+          name='username'
+          placeholder='Username'
+        />
         <input
           type='password'
-          name='password-repeat'
-          placeholder='Repeat Password'
+          name='password'
+          placeholder='Password'
         />
-      ) }
-      <input type='submit' value={
-        isSignup ? 'Sign Up' : 'Sign In'
-      } />
-    </form>
+        { isSignup && (
+          <input
+            type='password'
+            name='password-repeat'
+            placeholder='Repeat Password'
+          />
+        ) }
+        <input type='submit' value={
+          isSignup ? 'Sign Up' : 'Sign In'
+        } />
+      </form>
+    </div>
   </Modal>
 )
 

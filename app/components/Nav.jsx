@@ -35,7 +35,7 @@ const authenticatedLinks = [
 ]
 
 const Nav = ({ isLoggedIn, onLogout }) => (
-  <nav>
+  <div className='nav'>
     <Link to='/'>
       <img className='logo' src='/static/img/book-logo.svg' />
     </Link>
@@ -51,7 +51,7 @@ const Nav = ({ isLoggedIn, onLogout }) => (
     {
       isLoggedIn && <button onClick={onLogout}>Log Out</button>
     }
-  </nav>
+  </div>
 )
 
 export default Nav

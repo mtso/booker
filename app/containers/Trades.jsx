@@ -19,42 +19,49 @@ const mapDispatchToProps = (dispatch, { match }) => ({
 })
 
 const Trades = ({ trades, match, onAccept, onCancel }) => (
-  <div>
-    <div className='tab-container'>
-      <NavLink
-        className='tab-link'
-        activeClassName='active'
-        to={'/trades/incoming'}
-      >Incoming</NavLink>
-      <NavLink
-        className='tab-link'
-        activeClassName='active'
-        exact
-        to={'/trades/outgoing'}
-      >Outgoing</NavLink>
+  <div className='page-container'>
+    <div className='page-header'>
+      <h2 className='content-title'>
+        Trades
+      </h2>
+      <div className='tab-container'>
+        <NavLink
+          className='tab-link'
+          activeClassName='active'
+          to={'/trades/incoming'}
+        >Incoming</NavLink>
+        <NavLink
+          className='tab-link'
+          activeClassName='active'
+          exact
+          to={'/trades/outgoing'}
+        >Outgoing</NavLink>
+      </div>
     </div>
-    <Route path={'/trades/incoming'} component={() => (
-      <TradeTable
-        trades={
-          // TODO: there may be an opportunity to try using one
-          // Route with match.params.type or match.url, etc.
-          trades.incoming
-        }
-        controls={
-          ({ id }) => (<button onClick={onAccept(id)}>Accept Trade</button>)
-        }
-        cell={'temp'}
-      />
-    )} />
-    <Route path={'/trades/outgoing'} component={() => (
-      <TradeTable
-        trades={trades.outgoing}
-        controls={
-          ({ id }) => (<button onClick={onCancel(id)}>Cancel Trade</button>)
-        }
-        cell={'temp'}
-      />
-    )} />
+    <div className='content-container'>
+      <Route path={'/trades/incoming'} component={() => (
+        <TradeTable
+          trades={
+            // TODO: there may be an opportunity to try using one
+            // Route with match.params.type or match.url, etc.
+            trades.incoming
+          }
+          controls={
+            ({ id }) => (<button onClick={onAccept(id)}>Accept Trade</button>)
+          }
+          cell={'temp'}
+        />
+      )} />
+      <Route path={'/trades/outgoing'} component={() => (
+        <TradeTable
+          trades={trades.outgoing}
+          controls={
+            ({ id }) => (<button onClick={onCancel(id)}>Cancel Trade</button>)
+          }
+          cell={'temp'}
+        />
+      )} />
+    </div>
   </div>
 )
 

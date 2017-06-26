@@ -14,9 +14,9 @@ import BookCreatorContainer from './BookCreatorContainer'
 import BookPreviewContainer from './BookPreviewContainer'
 
 const App = () => (
-  <div>
+  <div className='container'>
     <NavContainer />
-    <div className='content'>
+    <div className='page'>
       <Route path='/book/:id' component={BookPreviewContainer} />
       <Route exact path='/' component={BookBrowser} />
       <Route path='/mybooks' component={BookBrowser} />

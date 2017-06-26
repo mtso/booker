@@ -23,39 +23,50 @@ const mapDispatchToProps = (dispatch, { match, isLoggedIn }) => ({
     .catch(console.warn),
 })
 
+
 const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
-  <div>
-    <div className='tab-container'>
-      <NavLink
-        className='tab-link'
-        activeClassName='active'
-        exact
-        to='/'
-      >All Books</NavLink>
-      {isLoggedIn &&
+  <div className='page-container'>
+    <div className='page-header'>
+      <h2 className='content-title'>
+        Booker
+      </h2>
+      <div className='tab-container'>
         <NavLink
           className='tab-link'
           activeClassName='active'
-          to='/mybooks'
-        >My Books</NavLink>}
-      {isLoggedIn && 
-        <Link
-          to='/new'
-        >Add a Book</Link>}
+          exact
+          to='/'
+        >All Books</NavLink>
+        {isLoggedIn &&
+          <NavLink
+            className='tab-link'
+            activeClassName='active'
+            to='/mybooks'
+          >My Books</NavLink>}
+        {isLoggedIn && 
+          <Link
+            to='/new'
+            className='action-button add-button'
+          >Add a Book</Link>}
+      </div>
     </div>
     <Route exact path='/' component={() => (
-      <BookTable
-        books={books.all}
-        controls={(book) => {
-          if (book.username !== user.username) {
-            return (
-              <button onClick={
-                () => history.push('/book/'+book.id)
-              }>Tradeable</button>
-            )
-          }
-        }}
-      />
+      <div className='content-container'>
+        <BookTable
+          books={books.all}
+          controls={(book) => {
+            if (book.username !== user.username) {
+              return (
+                <div className='cell-button-container'>
+                  <button className='cell-button' onClick={
+                    () => history.push('/book/'+book.id)
+                  }>Tradeable</button>
+                </div>
+              )
+            }
+          }}
+        />
+      </div>
     )} />
     <PrivateRoute exact path='/mybooks' component={() => (
       <BookTable books={books.mybooks} />

@@ -1,8 +1,17 @@
 .account-form {
   margin-bottom: 2em;
 
-  input {
-    display: block;
-    margin-bottom: 1em;
+  label {
+    font-size: 0.9em;
+    font-weight: 600;
   }
+}
+
+input[type=text], input[type=password] {
+  display: block;
+  margin-bottom: 1em;
+  font-size: 1em;
+  padding: 0.5em;
+  border-radius: 3px;
+  border: 1px solid lightgray;
 }

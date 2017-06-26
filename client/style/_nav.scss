@@ -1,54 +1,29 @@
 @import 'variables';
 @import 'mixins';
 
-$sidebar-width: 300px;
-
-nav {
-  height: 100%;
+.nav {
   background-color: $secondary-color;
-  position: fixed;
-  min-width: $sidebar-width;
-  width: 25%;
-  top: 0;
-  left: 0;
 
   a, button {
-    margin-left: 3em;
+    margin-left: 2.4em;
     display: block;
-    line-height: 2em;
+    line-height: 2.5em;
     font-size: $navlink-font-size;
   }
 
   .logo {
-    margin-top: 3em;
+    margin-top: 2.6em;
     margin-bottom: 1em;
   }
 }
 
-.content {
-  padding: 2em 3em;
-  position: absolute;
-  left: 25%;
-}
-
 .tab-container {
+  margin-top: 2.1em;
   margin-bottom: 1em;
 }
 
 .tab-link {
-  font-size: 1em;
+  font-size: 0.9em;
   margin-right: 1em;
   font-weight: 600;
-}
-
-
-@media all and (max-width: 1200px) {
-  nav {
-    // width: 300px;
-  }
-
-  .content {
-    // margin-left: 0px;
-    left: $sidebar-width;
-  }
 }
