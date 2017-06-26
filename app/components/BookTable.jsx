@@ -24,12 +24,13 @@ class BookTable extends Component {
   }
   
   render() {
-    const { books, className, controls, details } = this.props
+    const { books, className, controls, details, isLinked } = this.props
     return (
       <div className={className || 'book-table'}>
         {books.map((book, i, books) => (
           <BookCell
             key={i}
+            isLinked={isLinked}
             {...book}
           >
             { controls && controls(book, i, books) }

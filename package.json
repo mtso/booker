@@ -1,9 +1,11 @@
 {
   "name": "booker",
-  "version": "0.0.0",
+  "version": "0.0.3",
   "private": true,
+  "author": "mtso <mtso@tuta.io>",
   "scripts": {
-    "test": "mocha spec"
+    "test": "mocha spec",
+    "build": "webpack -p"
   },
   "dependencies": {
   },

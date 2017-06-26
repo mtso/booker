@@ -34,13 +34,11 @@ export const submitSignup = (username, password) => (dispatch) => request
   })
   .then(({ body }) => body)
   .then(({ ok, ...rest }) => {
-    console.log(ok, rest)
     if (ok) {
       return request
         .get('/api/user/'+username)
         .then(({ body }) => body)
         .then(({ ok, message, ...user }) => {
-          console.log(ok, message, user)
           if (ok) {
             return dispatch(login(user))
           } else {

@@ -135,10 +135,10 @@ type TradeResponse struct {
 	Status string `json:"status"`
 
 	User struct {
-		Username string `json:"username"`
+		Username    string `json:"username"`
 		DisplayName string `json:"display_name"`
-		City     string `json:"city"`
-		State    string `json:"state"`
+		City        string `json:"city"`
+		State       string `json:"state"`
 	} `json:"user"`
 
 	Book struct {
