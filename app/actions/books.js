@@ -1,4 +1,4 @@
-import { RECEIVE_BOOK, RECEIVE_BOOKS, RECEIVE_MYBOOKS, RECEIVE_BOOKSEARCH } from './types'
+import { RECEIVE_BOOK, RECEIVE_BOOKS, RECEIVE_MYBOOKS, RECEIVE_BOOKSEARCH, CLEAR_SEARCH } from './types'
 import request from 'superagent'
 
 // Async thunks
@@ -100,3 +100,4 @@ export const receiveMyBooks = (books) => ({
   type: RECEIVE_MYBOOKS,
   books,
 })
+

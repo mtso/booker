@@ -2,46 +2,43 @@ import React, { Component } from 'react'
 import BookCell from './BookCell'
 import Masonry from 'masonry-layout'
 
-// class BookTable extends Component {
-//   componentDidMount(prevProps, prevState) {
-//     const mount = document.querySelector('.book-table')
-//     console.log(mount)
-//     const grid = new Masonry(mount, {
-//       itemSelector: '.book-cell',
-//       columnWidth: 200,
-//       gutter: 10,
-//     })
-//   }
-//   render() {
-//     const { books, className, controls } = this.props
-//     return (
-//       <div className={className || 'book-table'}>
-//         {books.map((book, i, books) => (
-//           <BookCell
-//             key={i}
-//             {...book}
-//           >
-//             {controls && controls(book, i, books)}
-//           </BookCell>
-//         ))}
-//       </div>
-//     )
-//   }
-// }
+const layoutGrid = (i) => {
+  if (!document.querySelector('.book-cell') && (i < 10)) {
+    setTimeout(() => layoutGrid(++i), 100)
+  }
+  const mount = document.querySelector('.book-table')
+  const grid = new Masonry(mount, {
+    itemSelector: '.book-cell',
+    columnWidth: 200,
+    gutter: 10,
+  })
+}
 
-const BookTable = ({ books, className, controls, isLinked, details }) => (
-  <div className={className || 'book-table'}>
-    {books.map((book, i, books) => (
-      <BookCell
-        key={i}
-        isLinked={isLinked}
-        {...book}
-      >
-        {controls && controls(book, i, books)}
-        {details && details(book, i, books)}
-      </BookCell>
-    ))}
-  </div>
-)
+class BookTable extends Component {
+  componentDidMount() {
+    const { isCreator } = this.props
+    if (isCreator) {
+      return
+    }
+    layoutGrid(0)
+  }
+  
+  render() {
+    const { books, className, controls, details } = this.props
+    return (
+      <div className={className || 'book-table'}>
+        {books.map((book, i, books) => (
+          <BookCell
+            key={i}
+            {...book}
+          >
+            { controls && controls(book, i, books) }
+            { details && details(book, i, books)}
+          </BookCell>
+        ))}
+      </div>
+    )
+  }
+}
 
 export default BookTable

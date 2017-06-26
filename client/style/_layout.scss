@@ -75,17 +75,6 @@ html, body {
   }
 }
 
-// @media all and (max-width: 1200px) {
-//   nav {
-//     // width: 300px;
-//   }
-
-//   .content {
-//     // margin-left: 0px;
-//     left: $sidebar-width;
-//   }
-// }
-
 .auth-container {
   -webkit-animation: fadein 0.22s;
 
@@ -151,13 +140,11 @@ html, body {
   }
 
   .book-table {
-    height: 100%;
-    max-height: 100%;
-    overflow-y: scroll;
     width: 100%;
 
     .book-cell {
       height: 100%;
+      display: absolute;
     }
 
     .book-cell:last-child {

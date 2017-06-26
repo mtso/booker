@@ -11,7 +11,7 @@ const closeModal = (history) => () => {
   }
 }
 
-const BookCreator = ({ books, onSearch, onAddBook, history }) => (
+const BookCreator = ({ books, onSearch, onAddBook, history, onClose }) => (
   <Modal>
     <div className='bookcreator-container'>
       <div className='bookcreator-header'>
@@ -24,8 +24,9 @@ const BookCreator = ({ books, onSearch, onAddBook, history }) => (
       </div>
 
       <BookTable
+        isCreator={true}
         books={books}
-        details={(book) => (
+        controls={(book) => (
           <div className='cell-detail' key={book.title}>
             <h2>{book.title}</h2>
             { book.pageCount && (

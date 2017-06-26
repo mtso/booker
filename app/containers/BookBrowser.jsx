@@ -51,7 +51,7 @@ const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
       </div>
     </div>
     <div className='content-container'>
-      <Route exact path='/' component={() => (
+      <Route exact path='/' render={() => (
         <BookTable
           isLinked={true}
           books={books.all}
@@ -68,7 +68,7 @@ const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
           }}
         />
       )} />
-      <PrivateRoute exact path='/mybooks' component={() => (
+      <PrivateRoute exact path='/mybooks' render={() => (
         <BookTable
           books={books.mybooks}
           isLinked={true}
