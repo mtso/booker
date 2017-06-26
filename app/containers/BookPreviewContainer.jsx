@@ -17,7 +17,6 @@ const mapDispatchToProps = (dispatch, { match, history }) => ({
     .then(() => dispatch(getBook(bookid)))
     .catch(console.warn),
   onUnauthedTrade: (bookid) => () => {
-    console.log(bookid)
     history.push('/signup', { from: '/book/'+bookid })
   },
 })
