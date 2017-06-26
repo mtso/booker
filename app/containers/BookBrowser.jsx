@@ -52,23 +52,27 @@ const BookBrowser = ({ isLoggedIn, user, books, match, onTrade, history }) => (
     </div>
     <div className='content-container'>
       <Route exact path='/' component={() => (
-          <BookTable
-            books={books.all}
-            controls={(book) => {
-              if (book.username !== user.username) {
-                return (
-                  <div className='cell-button-container'>
-                    <button className='cell-button' onClick={
-                      () => history.push('/book/'+book.id)
-                    }>Tradeable</button>
-                  </div>
-                )
-              }
-            }}
-          />
+        <BookTable
+          isLinked={true}
+          books={books.all}
+          controls={(book) => {
+            if (book.username !== user.username) {
+              return (
+                <div className='cell-button-container cell-topright'>
+                  <button className='cell-button' onClick={
+                    () => history.push('/book/'+book.id)
+                  }>Tradeable</button>
+                </div>
+              )
+            }
+          }}
+        />
       )} />
       <PrivateRoute exact path='/mybooks' component={() => (
-        <BookTable books={books.mybooks} />
+        <BookTable
+          books={books.mybooks}
+          isLinked={true}
+        />
       )} />
     </div>
   </div>

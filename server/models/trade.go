@@ -35,6 +35,7 @@ const (
 			trades.user_id,
 			trades.status,
 			users.username,
+			users.display_name,
 			users.city,
 			users.state,
 			books.title,
@@ -52,6 +53,7 @@ const (
 			trades.user_id,
 			trades.status,
 			users.username,
+			users.display_name,
 			users.city,
 			users.state,
 			books.title,
@@ -134,6 +136,7 @@ type TradeResponse struct {
 
 	User struct {
 		Username string `json:"username"`
+		DisplayName string `json:"display_name"`
 		City     string `json:"city"`
 		State    string `json:"state"`
 	} `json:"user"`
@@ -182,15 +185,17 @@ func scanTradeResponse(r *sql.Rows, t *TradeResponse) error {
 		var state sql.NullString
 
 		err := r.Scan(&t.Id, &t.BookId, &t.UserId, &t.Status,
-			&t.User.Username, &city, &state,
+			&t.User.Username, &t.User.DisplayName, &city, &state,
 			&t.Book.Title, &t.Book.ImageUrl)
 
-		if c, err := city.Value(); err != nil {
+		if c, err := city.Value(); err == nil {
 			t.User.City = c.(string)
 		}
-		if s, err := state.Value(); err != nil {
+
+		if s, err := state.Value(); err == nil {
 			t.User.State = s.(string)
 		}
+
 		return err
 	}
 

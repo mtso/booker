@@ -20,36 +20,24 @@ class Searchbox extends Component {
 
   render() {
     return (
-      <form onSubmit={this.onSearch || ((e) => e.preventDefault())}>
+      <form
+        className='searchbox-container'
+        onSubmit={this.onSearch || ((e) => e.preventDefault())}
+      >
         <input
+          className='searchbox'
           type='search'
           placeholder='Search Title'
           value={this.state.value}
           onChange={this.updateSearch}
         />
-        <button
+        <input
           type='submit'
-        >
-          Search
-        </button>
+          value='Search'
+        />
       </form>
     )
   }
 }
-
-// const Searchbox = ({ onSubmit, ...props }) => (
-//   <form onSubmit={onSubmit || ((e) => e.preventDefault())}>
-//     <input
-//       type='search'
-//       placeholder='Search Title'
-//       {...props}
-//     />
-//     <button
-//       type='submit'
-//     >
-//       Search
-//     </button>
-//   </form>
-// )
 
 export default Searchbox

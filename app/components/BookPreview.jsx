@@ -22,7 +22,7 @@ const BookPreview = ({ user, history, id, title, image_url, owner, trade,
   }
 
   const isLoggedIn = !!user.username
-  const { display_name, city, state } = owner
+  const { username, display_name, city, state } = owner
 
   let location
   if (city !== '') {
@@ -37,29 +37,31 @@ const BookPreview = ({ user, history, id, title, image_url, owner, trade,
   let tradeControl
   const { status } = trade
   if (status && status === STATUS_REQUESTED) {
-    tradeControl = <button onClick={onCancel(trade.id)(id)}>Cancel Trade</button>
+    tradeControl = <button className='action-button' onClick={onCancel(trade.id)(id)}>Cancel Trade</button>
   } else if (user.id && owner.id === user.id) {
     tradeControl = null
   } else {
     console.log(isLoggedIn)
-    tradeControl = <button onClick={
+    tradeControl = <button className='action-button' onClick={
       isLoggedIn ? onTrade(id) : onUnauthedTrade(id)
     }>Request Trade</button>
   }
 
   return (
     <Modal>
-      <button onClick={closeModal(history)}>Close</button>
-      <br />
-      <img src={image_url} />
-      <br />
-      { title }
-      <br />
-      Owner: { display_name }
-      <br />
-      { location && 'Location: '+location }
-      <br />
-      { tradeControl && tradeControl }
+      <div className='bookcreator-container'>
+        <div className='bookcreator-header'>
+          <button className='float-right' onClick={closeModal(history)}>Close</button>
+        </div>
+
+        <img src={image_url} />
+        <div className='book-detail'>
+          <h2>{ title }</h2>
+          <h4>{ (display_name || username) && 'Owner: ' + (display_name || username) }</h4>
+          <h4>{ location && 'Location: '+location }</h4>
+          { tradeControl && tradeControl }
+        </div>
+      </div>
     </Modal>
   )
 }

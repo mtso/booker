@@ -25,5 +25,10 @@
 .tab-link {
   font-size: 0.9em;
   margin-right: 1em;
-  font-weight: $bold;
+  font-weight: $semibold;
+}
+
+.tab-link.active {
+  border-bottom: 1.5px solid $primary-color;
+  padding-bottom: 0.4em;
 }

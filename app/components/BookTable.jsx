@@ -29,14 +29,16 @@ import Masonry from 'masonry-layout'
 //   }
 // }
 
-const BookTable = ({ books, className, controls }) => (
+const BookTable = ({ books, className, controls, isLinked, details }) => (
   <div className={className || 'book-table'}>
     {books.map((book, i, books) => (
       <BookCell
         key={i}
+        isLinked={isLinked}
         {...book}
       >
         {controls && controls(book, i, books)}
+        {details && details(book, i, books)}
       </BookCell>
     ))}
   </div>
