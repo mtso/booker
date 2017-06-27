@@ -153,7 +153,7 @@ func (s TradeSchema) GetIncomingTrades(userid int64) ([]TradeResponse, error) {
 		return nil, err
 	}
 	defer rows.Close()
-	
+
 	trades := make([]TradeResponse, 0)
 
 	var tr TradeResponse
@@ -190,11 +190,11 @@ func scanTradeResponse(r *sql.Rows, t *TradeResponse) error {
 			&t.User.Username, &t.User.DisplayName, &city, &state,
 			&t.Book.Title, &t.Book.ImageUrl)
 
-		if c, err := city.Value(); err == nil {
+		if c, _ := city.Value(); c != nil {
 			t.User.City = c.(string)
 		}
 
-		if s, err := state.Value(); err == nil {
+		if s, _ := state.Value(); s != nil {
 			t.User.State = s.(string)
 		}
 
@@ -217,7 +217,7 @@ func (s TradeSchema) FindById(id string) (t Trade, err error) {
 		return
 	}
 	defer rows.Close()
-	
+
 	err = scanTrade(rows, &t)
 	return
 }
@@ -228,7 +228,7 @@ func (s TradeSchema) FindByUser(id int64, bookid int64) (t Trade, err error) {
 		return
 	}
 	defer rows.Close()
-	
+
 	err = scanTrade(rows, &t)
 	return
 }
