@@ -79,6 +79,7 @@ func (u UserSchema) Find(username string) (user User, err error) {
 	if err != nil {
 		return
 	}
+	defer rows.Close()
 
 	err = scanUser(rows, &user)
 	return

@@ -152,7 +152,8 @@ func (s TradeSchema) GetIncomingTrades(userid int64) ([]TradeResponse, error) {
 	if err != nil {
 		return nil, err
 	}
-
+	defer rows.Close()
+	
 	trades := make([]TradeResponse, 0)
 
 	var tr TradeResponse
@@ -168,6 +169,7 @@ func (s TradeSchema) GetOutgoingTrades(userid int64) ([]TradeResponse, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	trades := make([]TradeResponse, 0)
 
@@ -214,6 +216,8 @@ func (s TradeSchema) FindById(id string) (t Trade, err error) {
 	if err != nil {
 		return
 	}
+	defer rows.Close()
+	
 	err = scanTrade(rows, &t)
 	return
 }
@@ -223,6 +227,8 @@ func (s TradeSchema) FindByUser(id int64, bookid int64) (t Trade, err error) {
 	if err != nil {
 		return
 	}
+	defer rows.Close()
+	
 	err = scanTrade(rows, &t)
 	return
 }
