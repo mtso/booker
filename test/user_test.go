@@ -27,7 +27,7 @@ func TestUpdateLocation(t *testing.T) {
 	err := AuthenticateSession(ts, client, User1, Pass1)
 	mustEqual(err, nil, "authenticate session")
 
-	data := []byte(`{"city":"Test City","state":"Test State"}`)
+	data := []byte(`{"city":"Test City","state":"Test State","display_name":"testuser1"}`)
 	req, err := http.NewRequest("POST", ts.URL+"/api/user", bytes.NewBuffer(data))
 	mustEqual(err, nil, "prep POST request to /api/user")
 

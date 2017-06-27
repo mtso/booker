@@ -112,6 +112,7 @@ func (s BookSchema) GetBooks(page ...int) ([]Book, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	bks := make([]Book, 0)
 	for rows.Next() {
@@ -131,6 +132,7 @@ func (s BookSchema) GetMyBooks(username string) ([]Book, error) {
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	bks := make([]Book, 0)
 	for rows.Next() {
@@ -149,6 +151,7 @@ func (s BookSchema) FindById(id int64) (book Book, err error) {
 	if err != nil {
 		return
 	}
+	defer rows.Close()
 
 	err = scanFullBook(rows, &book)
 	return
@@ -188,6 +191,7 @@ func (s BookSchema) GetBookResponse(id int64) (br BookResponse, err error) {
 	if err != nil {
 		return
 	}
+	defer rows.Close()
 	err = scanBookResponse(rows, &br)
 	return
 }
