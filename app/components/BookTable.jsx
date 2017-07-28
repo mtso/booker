@@ -1,17 +1,24 @@
 import React, { Component } from 'react'
 import BookCell from './BookCell'
 import Masonry from 'masonry-layout'
+import onImagesLoaded from 'imagesloaded'
 
-const layoutGrid = (i) => {
-  if (!document.querySelector('.book-cell') && (i < 10)) {
-    setTimeout(() => layoutGrid(++i), 100)
+const layoutGrid = (selector, i) => {
+  const mountExists = !!document.querySelector(selector)
+  const cellsExist = !!document.querySelector('.book-cell')
+  if ((i < 20) && (!mountExists || !cellsExist)) {    
+    setTimeout(() => layoutGrid(selector, ++i), 200)
+    return
   }
-  const mount = document.querySelector('.book-table')
-  const grid = new Masonry(mount, {
-    itemSelector: '.book-cell',
-    columnWidth: 200,
-    gutter: 10,
-  })
+
+  const mount = document.querySelector(selector)
+  onImagesLoaded(mount, () => setTimeout(() => {
+    const grid = new Masonry(mount, {
+      itemSelector: '.book-cell',
+      columnWidth: 200,
+      gutter: 10,
+    })
+  }, 100))
 }
 
 class BookTable extends Component {
@@ -20,7 +27,9 @@ class BookTable extends Component {
     if (isCreator) {
       return
     }
-    layoutGrid(0)
+
+    const { className } = this.props
+    layoutGrid(className || '.book-table', 0)
   }
   
   render() {
