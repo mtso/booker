@@ -7,7 +7,7 @@ const AboutPage = () => (
         About Booker
       </h2>
     </div>
-    <div className='content-container'>
+    <div className='about-container'>
       <p>
       Booker is a book collecting and trading network.
       </p>
@@ -20,8 +20,8 @@ const AboutPage = () => (
       book cover.
       </p>
       <p>
-      Designed and built by <a href='https://github.com/mtso'>Matthew Tso</a>
-      with Go, React, Redux, and Postgres (<a href='https://github.com/mtso/booker'>View Source</a>).
+      Designed and built by <a href='https://github.com/mtso'>Matthew Tso</a> with
+      Go, React, Redux, and Postgres (<a href='https://github.com/mtso/booker'>View Source</a>).
       </p>
     </div>
   </div>

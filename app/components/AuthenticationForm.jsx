@@ -36,7 +36,7 @@ const AuthenticationForm = ({ onSubmit, isSignup, location }) => (
           <input
             type='password'
             name='password-repeat'
-            placeholder='Repeat Password'
+            placeholder='Confirm Password'
           />
         ) }
         <input type='submit' value={
