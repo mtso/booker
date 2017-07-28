@@ -12,6 +12,7 @@ import Trades from './Trades'
 import AccountFormContainer from './AccountFormContainer'
 import BookCreatorContainer from './BookCreatorContainer'
 import BookPreviewContainer from './BookPreviewContainer'
+import AboutPage from '../components/AboutPage'
 
 const App = () => (
   <div className='container'>
@@ -22,9 +23,10 @@ const App = () => (
       <Route path='/mybooks' component={BookBrowser} />
       <Route path='/signup' component={SigninForm} />
       <Route path='/signin' component={SigninForm} />
+      <Route path='/about' component={AboutPage} />
       <PrivateRoute path='/account' component={AccountFormContainer} />
       <PrivateRoute path='/new' component={BookCreatorContainer} />
-      
+
       <PrivateRoute exact path='/trades' render={() => (<Redirect to='/trades/incoming' />)} />
       <PrivateRoute path='/trades/:type' component={Trades} />
     </div>
